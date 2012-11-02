@@ -1,0 +1,2 @@
+*.GRD filter=lfs diff=lfs merge=lfs -text
+OSTN*.* filter=lfs diff=lfs merge=lfs -text
