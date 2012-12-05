@@ -1,1 +1,2 @@
 *.par filter=lfs diff=lfs merge=lfs -text
+*._par filter=lfs diff=lfs merge=lfs -text
