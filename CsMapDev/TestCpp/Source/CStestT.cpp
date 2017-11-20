@@ -84,6 +84,36 @@ int CStestT (bool verbose,long32_t duration)
 	// Mostly to keep lint/compiler happy.
 	nmStartClock = clock ();
 
+	/* Testing LL-GDA94 to GDA2020.LL conversion. */
+	double llGda94 [3] = {112.00, -20.00, 0.0};
+	double llGda2020 [3] = {0.0, 0.0, 0.0};
+
+	srcCS = CS_csloc ("LL-GDA94");
+	trgCS = CS_csloc ("GDA2020.LL");
+
+	if (srcCS != NULL && trgCS != NULL)
+	{
+
+		dtcprm = CS_dtcsu (srcCS,trgCS,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
+		if (dtcprm != NULL)
+		{
+			status = CS_dtcvt (dtcprm,llGda94,llGda2020);
+		}
+	}
+	CS_dtcls (dtcprm);
+
+	if (srcCS != NULL && trgCS != NULL)
+	{
+		dtcprm = CS_dtcsu (trgCS,srcCS,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
+		if (dtcprm != NULL)
+		{
+			status = CS_dtcvt (dtcprm,llGda2020,llGda94);
+		}
+	}
+	CS_dtcls (dtcprm);
+	nmDoneClock = clock ();
+
+#ifdef __SKIP__
 	/* Testing implementation of the General Polynomial geodetic
 	   transofrmation. */
 	double llIreland [3] = { -6.5000,     55.0000,      0.000};
@@ -117,34 +147,6 @@ int CStestT (bool verbose,long32_t duration)
 	}
 	nmDoneClock = clock ();
 
-#ifdef __SKIP__
-	/* Testing the GDA2020 implementation. */
-	double llAgd66 [3] = {112.00, -20.00, 0.0};
-	double llGda2020 [3] = {0.0, 0.0, 0.0};
-
-	srcCS = CS_csloc ("LL-AGD84-Grid");			// via grid
-	trgCS = CS_csloc ("GDA2020-7P.MGA-46");
-
-	if (srcCS != NULL && trgCS != NULL)
-	{
-		dtcprm = CS_dtcsu (srcCS,trgCS,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
-		if (dtcprm != NULL)
-		{
-			status = CS_dtcvt (dtcprm,llAgd66,llGda2020);
-		}
-	}
-	CS_dtcls (dtcprm);
-
-	if (srcCS != NULL && trgCS != NULL)
-	{
-		dtcprm = CS_dtcsu (trgCS,srcCS,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
-		if (dtcprm != NULL)
-		{
-			status = CS_dtcvt (dtcprm,llGda2020,llAgd66);
-		}
-	}
-	CS_dtcls (dtcprm);
-	nmDoneClock = clock ();
 #endif
 
 #ifdef __SKIP__
