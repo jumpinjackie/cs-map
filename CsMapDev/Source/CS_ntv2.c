@@ -482,7 +482,7 @@ int CSinitNTv2 (struct cs_NTv2_* thisPtr,Const char *filePath,long32_t bufferSiz
 	/* Verify that this is the kind of file we know how to deal with. */
 	if (strncmp (fileHdr.Canadian.titl01,"NUM_OREC",8))
 	{
-		/* Opps!!! Not a CaNTv2 file. */
+		/* Oops!!! Not a CaNTv2 file. */
 		CS_erpt (cs_INV_FILE);
 		goto error;
 	}
@@ -506,7 +506,7 @@ int CSinitNTv2 (struct cs_NTv2_* thisPtr,Const char *filePath,long32_t bufferSiz
 	}
 	else
 	{
-		/* Opps!!! Don't know what kind of file it is. */
+		/* Oops!!! Don't know what kind of file it is. */
 		CS_erpt (cs_INV_FILE);
 		goto error;
 	}
@@ -535,9 +535,9 @@ int CSinitNTv2 (struct cs_NTv2_* thisPtr,Const char *filePath,long32_t bufferSiz
 	}
 	/* The rest of the header is pretty much useless. */
 
-	/* Now, we deal with the sub-directories.  THese are very
+	/* Now, we deal with the sub-directories.  These are very
 	   important. */
-	malcCnt = sizeof (struct csNTv2SubHdr_) * (ulong32_t)thisPtr->SubCount;
+	malcCnt = sizeof (struct csNTv2SubGrid_) * (ulong32_t)thisPtr->SubCount;
 	thisPtr->SubGridDir = (struct csNTv2SubGrid_ *)CS_malc (malcCnt);
 	if (thisPtr->SubGridDir == NULL)
 	{
@@ -663,9 +663,9 @@ int CSinitNTv2 (struct cs_NTv2_* thisPtr,Const char *filePath,long32_t bufferSiz
 		subPtr->GridRecCnt = fileSubHdr.gs_count;
 		/* WEST Positive, dummy.  The extra .01 is to eliminate possible fuzz
 		   in the double portion of the calculations. */
-		subPtr->RowCount = (unsigned short)(((subPtr->NwReference [LAT] - subPtr->SeReference [LAT]) / subPtr->DeltaLat) + 1.01);
-		subPtr->ElementCount = (unsigned short)(((subPtr->NwReference [LNG] - subPtr->SeReference [LNG]) / subPtr->DeltaLng) + 1.01);
-		subPtr->RowSize = (unsigned short)(subPtr->ElementCount * thisPtr->RecSize);
+		subPtr->RowCount = (ulong32_t)(((subPtr->NwReference [LAT] - subPtr->SeReference [LAT]) / subPtr->DeltaLat) + 1.01);
+		subPtr->ElementCount = (ulong32_t)(((subPtr->NwReference [LNG] - subPtr->SeReference [LNG]) / subPtr->DeltaLng) + 1.01);
+		subPtr->RowSize = (ulong32_t)(subPtr->ElementCount * thisPtr->RecSize);
 
 		/* Certain sub grids are not cache-able.  In the Canadian file, the region
 		   which is not cache-able is rather small.  We use the csCaNTv2KludgeTable
@@ -957,7 +957,7 @@ struct csNTv2SubGrid_* CSlocateSubNTv2 (struct cs_NTv2_* thisPtr,Const double so
 				idx = cvtPtr->ChildIndex - 1;
 			}
 		}
-	}			/*lint !e850   loop variable (idx) is modified within the loop body  (PC_Lint lin nbr is off by one) */
+	}			/*lint !e850   loop variable (idx) is modified within the loop body  (PC_Lint line nbr is off by one) */
 	else
 	{
 		/* The Spanish variation.  We search all subgrids looking for
@@ -979,7 +979,7 @@ struct csNTv2SubGrid_* CSlocateSubNTv2 (struct cs_NTv2_* thisPtr,Const double so
 				wpLL [LNG] <= subPtr->NwReference [LNG] &&
 				wpLL [LAT] <= subPtr->NwReference [LAT])
 			{
-				/* Yes it does.  Getthe cell size and see if it is batter
+				/* Yes it does.  Get the cell size and see if it is batter
 				   than what we have found so far. */
 				if (subPtr->Density < bestCellSize)
 				{
@@ -1148,7 +1148,7 @@ int CScalcNTv2 (struct cs_NTv2_* thisPtr,double deltaLL [2],Const double source 
 		seCell [LNG] = cvtPtr->SeReference [LNG] + cvtPtr->DeltaLng * (double)eleNbr;
 		seCell [LAT] = cvtPtr->SeReference [LAT] + cvtPtr->DeltaLat * (double)rowNbr;
 		nwCell [LNG] = seCell [LNG] + cvtPtr->DeltaLng;
-		nwCell [LAT] = seCell [LAT] + cvtPtr->DeltaLng;
+		nwCell [LAT] = seCell [LAT] + cvtPtr->DeltaLat;
 
 		/* Build the extent portions of the grid cells. */
 		thisPtr->longitudeCell.seCorner [LNG] = seCell [LNG];

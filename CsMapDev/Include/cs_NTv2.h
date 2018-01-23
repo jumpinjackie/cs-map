@@ -62,7 +62,7 @@ enum csNTv2Type {csNTv2TypeNone = 0,
 #	pragma pack (1)
 #else
 	/* I don't know what would work for WATCOM.  You may need to
-	   add your own stuff here depeneding on the compiler.  You need
+	   add your own stuff here depending on the compiler.  You need
 	   to enforce a packing factor of 1; i.e. the compiler MUST not
 	   add any packing to the structure for alignment. */
 #endif
@@ -71,7 +71,7 @@ enum csNTv2Type {csNTv2TypeNone = 0,
    Canadian NT v2 data file.  This is common to both variations.
    Generally speaking, the accuracy values are ignored.
 
-   Note that these files are all based on west positive lonigtude.
+   Note that these files are all based on west positive longitude.
    Thus, a positive del_lng is a shift to the west. */
 struct TcsCaNTv2Data
 {
@@ -203,7 +203,7 @@ struct csNTv2SubHdr_
 	char titl02 [8];		/* Should be "PARENT  " */
 	char parent [8];		/* Name of the parent sub-file,
 							   or "NONE" if this is the top
-							   of a heirarchy. */
+							   of a hierarchy. */
 	char titl03 [8];		/* Should be "CREATED " */
 	char created [8];		/* Create date in ASCII (yy-mm-dd) */
 	char titl04 [8];		/* Should be "UPDATED " */
@@ -274,7 +274,7 @@ struct csNTv2SubHdr_
    to compute the AA, BB, CC, and DD bilinear coefficients is the southeast
    corner of the grid cell.  In most other grid cell environments, the
    reference corner is the south west corner of the grid cell.
-   
+
    Note that this cell structure is sufficient for the calculation of
    either the longitude or latitude but not both.  Two such structures
    are required to perform a complete datum shift.  The NTv2 file format
@@ -324,7 +324,7 @@ struct csNTv2SubGrid_
 								   appear in the data file. */
 	double DeltaLng;			/* Size of a grid cell in degrees. */ 
 	double DeltaLat;			/* Size of a grid cell in degrees. */
-	double Density;				/* An inprecise value which indicates
+	double Density;				/* An imprecise value which indicates
 								   the density of the grid in the
 								   sub-grid.  Used to select one grid
 								   over another in overlap situations. */
@@ -340,10 +340,10 @@ struct csNTv2SubGrid_
 								   sub-files. The value is the index of the
 								   first such sub-file in the sub-grid
 								   directory. */
-	unsigned short RowCount;	/* The number of grid rows (i.e. records)
+	ulong32_t RowCount;			/* The number of grid rows (i.e. records)
 								   in the sub-grid. */
-	unsigned short ElementCount;/* Number of 16 byte data records in each row. */
-	unsigned short RowSize;		/* Size of records in the sub-grid in
+	ulong32_t ElementCount;		/* Number of 16 byte data records in each row. */
+	ulong32_t RowSize;			/* Size of records in the sub-grid in
 								   bytes; i.e. the length of each row of
 								   longitude values (16 * ElementCount). */
 	short Cacheable;			/* TRUE says this sub-grid is cachable.
@@ -407,9 +407,9 @@ struct cs_NTv2_
 									   a string which includes the file name,
 									   and the actual sub-grid used to do
 									   a calculation. */
-	/* Two items of note with regard to the folowing two elements.
+	/* Two items of note with regard to the following two elements.
 	   1> These are of the normal CS-MAP east longitude is positive, west
-		  longitude is negative variety.  These are computed to optimumize
+		  longitude is negative variety.  These are computed to optimize
 		  coverage validation performance.
 	   2> There may be holes of no coverage within this range.  Specifically,
 		  NTv2 data files which do not adhere to the original standard (such
@@ -432,6 +432,13 @@ struct cs_NTv2_
 	short maxIterations;
 };
 
+#ifdef __cplusplus
+/* This is required to use the functions below directly in the Console Test and
+   Console Utilities C++ modules.  Doubling up this specification does not appear
+   to have any negative affect.  */
+extern "C" {
+#endif
+
 struct cs_NTv2_* CSnewNTv2 (Const char *filePath,long32_t bufferSize,ulong32_t flags,
 																	 double density);
 int CSinitNTv2 (struct cs_NTv2_* thisPtr,Const char *filePath,long32_t bufferSize,
@@ -446,3 +453,8 @@ double CStestNTv2 (Const struct cs_NTv2_* thisPtr,Const double location [2]);
 Const char *CSsourceNTv2 (struct cs_NTv2_* thisPtr,Const double llSource [2]);
 void CSinitNTv2GridCell (struct csNTv2GridCell_* thisPtr);
 double CScalcNTv2GridCell (Const struct csNTv2GridCell_* thisPtr,Const double sourceLL [2]);
+
+#ifdef __cplusplus
+}
+#endif
+

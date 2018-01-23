@@ -66,6 +66,8 @@ extern "C" char *cs_DirP;
 extern "C" char csErrmsg [256];
 extern "C" double cs_Zero;
 extern "C" double cs_LlNoise;
+extern "C" double cs_Sec2Deg;		/* Converts arc seconds to degrees by multiplication */
+
 extern "C" const char csDictDir [];
 
 int CStestT (bool verbose,long32_t duration)
@@ -77,13 +79,55 @@ int CStestT (bool verbose,long32_t duration)
 
 	// Exercising GDA2020 systems.
 	int status;
-	struct cs_Csprm_ *srcCS;
-	struct cs_Csprm_ *trgCS;
-	struct cs_Dtcprm_ *dtcprm;
+	//struct cs_Csprm_ *srcCS;
+	//struct cs_Csprm_ *trgCS;
+	//struct cs_Dtcprm_ *dtcprm;
 
 	// Mostly to keep lint/compiler happy.
 	nmStartClock = clock ();
 
+	/* Testing the NTv2 code with the humugous BWTA2017 .gsb file. */
+	struct cs_NTv2_* ntv2Ptr;
+	double sourceLL [3];
+	double deltaLL  [3];
+	double resultLL [3];
+	double targetLL [3];
+	const char filePath [512] = "../Dictionaries/Germany/BWTA2017.gsb";
+//	const char filePath [512] = "../Dictionaries/Germany/NTv2_SN.gsb";
+//	const char filePath [512] = "../Dictionaries/Germany/BWTA2017.gsb";
+
+	sourceLL  [LNG] =   8.12334987;
+	sourceLL  [LAT] =   48.1234578;
+	sourceLL  [HGT] =   0.0;
+	deltaLL   [LNG] =   0.0;
+	deltaLL   [LAT] =   0.0;
+	deltaLL   [HGT] =   0.0;
+	resultLL  [LNG] =   0.0;
+	resultLL  [LAT] =   0.0;
+	resultLL  [HGT] =   0.0;
+	targetLL  [LNG] =   0.0;
+	targetLL  [LAT] =   0.0;
+	targetLL  [HGT] =   0.0;
+
+	ntv2Ptr = CSnewNTv2 (filePath,0L,0L,cs_Zero);
+	if (ntv2Ptr != NULL)
+	{
+		/* We have an object.  Do a conversion and check the result. */
+		status = CScalcNTv2 (ntv2Ptr,deltaLL,sourceLL);
+		resultLL [LNG] = sourceLL [LNG] - deltaLL [LNG] * cs_Sec2Deg;
+		resultLL [LAT] = sourceLL [LAT] + deltaLL [LAT] * cs_Sec2Deg;
+		resultLL [HGT] = sourceLL [HGT] + deltaLL [HGT];
+		printf ("DeltaLL = %f, %f \n",deltaLL[LNG],deltaLL[LAT]);
+	
+		CSdeleteNTv2 (ntv2Ptr);
+	}
+	else
+	{
+		err_cnt = 1;
+	}
+	nmDoneClock = clock ();
+
+#ifdef __SKIP__
 	/* Testing LL-GDA94 to GDA2020.LL conversion. */
 	double llGda94 [3] = {112.00, -20.00, 0.0};
 	double llGda2020 [3] = {0.0, 0.0, 0.0};
@@ -112,6 +156,7 @@ int CStestT (bool verbose,long32_t duration)
 	}
 	CS_dtcls (dtcprm);
 	nmDoneClock = clock ();
+#endif
 
 #ifdef __SKIP__
 	/* Testing implementation of the General Polynomial geodetic
