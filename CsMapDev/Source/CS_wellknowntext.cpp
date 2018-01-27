@@ -84,6 +84,17 @@ int CSwellKnownTextKrovak (struct cs_Csdef_* cs_def,struct cs_Eldef_ *el_def,con
 																			 ErcWktFlavor flavor);
 void CSwktConicAdj (struct cs_Csdef_ *csDef);
 
+// Working Trac Ticket #209.  Previously, the full WKT system name was conveyed
+// between modules using the desc_nm element of the cs_Csdef_ structure.  Since
+// the desc_nm element is dimensioned at 64, a WKT full name longer than 63
+// characters is truncated and causes problems.  It took 20 years to encounter
+// such a name, but we need to deal with it now.  We use the following functions
+// to insert, and then extract, the full WKT name in the cs_Csdef_ structure in
+// an manner which should have no effect on other processing.
+void CSinsertFullWktName (struct cs_Csdef_* csDefPtr,const char* fullWktName);
+void CSextractFullWktName (char *wktFullCrsName,int bufrSize,const struct cs_Csdef_ *csDefPtr);
+void CSresetFullWktName (struct cs_Csdef_ *csDefPtr);
+
 // The following function is used to compare a WKT ellipsoid definition as
 // provided by the elDef argument, with an MSI dictionary definition indicated
 // by the elKeyNamePtr argument.  Returns true if the two ellipsoids are
@@ -181,6 +192,84 @@ short CS_wktReduceKeyNm (char *result,size_t rsltSize,const char *source,const s
 	CS_stncp (result,lclResult,static_cast<int>(rsltSize));
 	return (cpRpl != NULL);
 }
+
+void CSinsertFullWktName (struct cs_Csdef_* csDefPtr,const char* fullWktName)
+{
+	int nmLength;
+	int copyCnt1;
+	int copyCnt2;
+	const char* restOfFullName;
+
+	// CS_stncp takes an int for is third parameter.
+	nmLength = static_cast<int>(strlen (fullWktName));
+
+	if (nmLength < sizeof (csDefPtr->desc_nm))
+	{
+		// Normal case, 99.999% of the time.
+		CS_stncp (csDefPtr->desc_nm,fullWktName,sizeof (csDefPtr->desc_nm));
+		csDefPtr->desc_nm [sizeof (csDefPtr->desc_nm)] = '\0';
+	}
+	else
+	{
+		// Split the full name between desc_nm and the totally unused
+		// cntry_st element.  To eliminate any side issues to this kludge,
+		// we will:
+		//     force desc_nm [63] to '\0' for ultimate safety
+		//     set desc_nm [62] to a very strange character ('\')
+		//     copy the first 62 characters of the name into desc_nm such that
+		//           desc_nm [61] will be the null character and desc_nm will
+		//           look like a normal null terminated string to any code
+		//           which looks at it
+		//     force cntry_st [0] to the null character
+		//     copy the remainder of the fullWKT name into cntry_st [1]
+		//            thru cntry_st [48] as a null terminated string, thus
+		//            cntry_st will look like an empty null terminated
+		//            string to any code which looks at it.
+		// Thus, we achieve this kludge without introducing any side affects
+		// and without changing any API's.
+
+		// We know that the full name is 64 characters or more in length.
+		copyCnt1 = sizeof (csDefPtr->desc_nm) - 2;
+		copyCnt2 = sizeof (csDefPtr->cntry_st) - 2;
+		restOfFullName = fullWktName + copyCnt1 -1;
+		CS_stncp (csDefPtr->desc_nm,fullWktName,copyCnt1);
+		csDefPtr->desc_nm [sizeof (csDefPtr->desc_nm) - 2] = '\\';
+		CS_stncp ((csDefPtr->cntry_st + 1),restOfFullName,copyCnt2);
+		csDefPtr->cntry_st [0] = '\0';
+	}
+}
+void CSextractFullWktName (char *wktFullCrsName,int bufrSize,const struct cs_Csdef_ *csDefPtr)
+{
+	char *chrPtr;
+	char wrkBufr [sizeof (csDefPtr->desc_nm) + sizeof (csDefPtr->cntry_st)];
+
+	if (csDefPtr->desc_nm [sizeof (csDefPtr->desc_nm) - 2] != '\\')
+	{
+		// Normal case 99.9999% of the time.
+		CS_stncp (wktFullCrsName,csDefPtr->desc_nm,bufrSize);
+	}
+	else
+	{
+		chrPtr = CS_stncp (wrkBufr,csDefPtr->desc_nm,sizeof (csDefPtr->desc_nm));
+		CS_stncp (chrPtr,csDefPtr->cntry_st + 1,sizeof (csDefPtr->cntry_st));
+		CS_stncp (wktFullCrsName,wrkBufr,bufrSize);
+	}
+	return;
+}
+
+// For maximum protection from undesireable side affects, we use this function
+// to undo the WKT Full Name kludge.  It does nothing if the kludge is not
+// in effect.
+void CSresetFullWktName (struct cs_Csdef_ *csDefPtr)
+{
+	if (csDefPtr->desc_nm [sizeof (csDefPtr->desc_nm) - 1] == '\\')
+	{
+		csDefPtr->desc_nm [sizeof (csDefPtr->desc_nm) - 1] = '\\';
+		memset (csDefPtr->cntry_st,'\0',sizeof (csDefPtr->cntry_st));
+	}
+	return;
+}
+
 // Function processes WKT ellipsoid key names before passing on to CS-MAP.
 void CS_wktElNameFix (char *ellipsoidName,size_t rsltSize,const char *srcName)
 {
@@ -378,6 +467,11 @@ int CS_wktToCsEx (struct cs_Csdef_ *csDef,struct cs_Dtdef_ *dtDef,struct cs_Elde
 	char csMapElName [cs_KEYNM_DEF];
 	char csMapDtName [cs_KEYNM_DEF];
 	char csMapCsName [cs_KEYNM_DEF];
+
+	// Trac #209  Buffer used to extract a full WKT name which excees 63 characters,
+	// dimensions of array should be greater than sizeof (cs_Csdef_.desc_nm) +
+	// sizeof (cs_Csdef_.cntry_st)
+	char wktFullCrsName [128];
 
 	/* Establish a stable environment; mostly to keep lint happy. */
 	if (csDef == NULL)
@@ -631,7 +725,7 @@ int CS_wktToCsEx (struct cs_Csdef_ *csDef,struct cs_Dtdef_ *dtDef,struct cs_Elde
 		// only ocassionally includes any datum components other than
 		/// the ellipsoid, it is hard to argue with this presumption.
 		csMapDtName [0] = '\0';
-		
+
 		// See if the actual WKT name extracted from the WKT (as preserved
 		// in the dtDef->name element by the CS_cs2Wkt parser) maps to a
 		// CS-MAP datum name.
@@ -955,11 +1049,16 @@ int CS_wktToCsEx (struct cs_Csdef_ *csDef,struct cs_Dtdef_ *dtDef,struct cs_Elde
 	{
 		if (!CS_stricmp (pp->key_nm,csDef->prj_knm)) break;
 	}
-	mapType = (pp->code == cs_PRJCOD_UNITY) ? csMapGeographicCSysKeyName : csMapProjectedCSysKeyName; 
+
+	mapType = (pp->code == cs_PRJCOD_UNITY) ? csMapGeographicCSysKeyName : csMapProjectedCSysKeyName;
+	// Trac #209 -- WKT CRS names can (now, after 20 years) exceed sizeof (desc_nm).
+	// CSextractFullWktName extracts the full name up to 112 characters.
+	CSextractFullWktName (wktFullCrsName,sizeof (wktFullCrsName),csDef);
 	csMapSt = csMapNameToNameC (mapType,wrkBufr,sizeof (wrkBufr),csMapFlvrAutodesk,nmFlavor,
-																				   csDef->desc_nm);
+																				   wktFullCrsName);
 	if (csMapSt == csMapOk)
 	{
+		// Length of mapped name should be < 24.
 		CS_stncp (csMapCsName,wrkBufr,cs_KEYNM_DEF);
 		st &= ~cs_CS2WKT_NMTRUNC;
 	}
@@ -984,6 +1083,7 @@ int CS_wktToCsEx (struct cs_Csdef_ *csDef,struct cs_Dtdef_ *dtDef,struct cs_Elde
 		// mapper check in the unlikely event of a flavored name that is
 		// the same as a CS-MAP name which maps to a different
 		// coordinate system.
+		// Trac #209 -- truncated WKT name is ok here, CS-MAP names are < 24 characters
 		if (CS_csIsValid (csDef->desc_nm))
 		{
 			CS_stncp (csMapCsName,csDef->desc_nm,cs_KEYNM_DEF);
@@ -1130,6 +1230,15 @@ int CS_wktToCsEx (struct cs_Csdef_ *csDef,struct cs_Dtdef_ *dtDef,struct cs_Elde
 		// If the key-name name of the resulting cs_Csdef_ was truncated,
 		// do the best we can to replace it with something meaningful, and
 		// untruncated.
+
+		// Trac #209 -- Need to use the wktFullName here.  This code is used when a match
+		// to an existing CS-MAP definition could not be found.  We will be returning the
+		// definition with a key name constructed from the EPSG number.  It is unlikely
+		// that there will be a NameMapper entry for a system for which there is no
+		// corresponding CS-MAP entry, but we'll do this anyway since the distribution
+		// NameMapper data file can be editted by users.
+
+		CSextractFullWktName (wktFullCrsName,sizeof (wktFullCrsName),csDef);
         epsgNbr = csMapNameToIdC (csMapProjGeoCSys,csMapFlvrEpsg,nmFlavor,csDef->desc_nm); 
 		if (epsgNbr > 0 && static_cast<unsigned long>(epsgNbr) != KcsNmInvNumber)
 		{
@@ -1140,6 +1249,10 @@ int CS_wktToCsEx (struct cs_Csdef_ *csDef,struct cs_Dtdef_ *dtDef,struct cs_Elde
 		    st &= ~cs_CS2WKT_NMTRUNC;
 		}
 	}
+
+	// Trac #209 -- Undo any full name encoding, should not be necessary, but to
+	// be absoluely sure of no side =affects.
+	CSresetFullWktName (csDef);
 
 	// If it has been determined appropriate to map all three names, we do so
 	// now, but only if all three names have been mapped successfully.
@@ -1383,7 +1496,7 @@ int CSwktToCs (struct cs_Csdef_ *csDef,struct cs_Dtdef_ *dtDef,struct cs_Eldef_ 
 	memset (csDef,'\0',sizeof (*csDef));
 	csDef->wktFlvr = static_cast<short>(flavor);
 	cp = wktElement->GetElementNameC ();
-	CS_stncp (csDef->desc_nm,cp,sizeof (csDef->desc_nm));
+	CSinsertFullWktName (csDef,cp);
 	CS_stncp (reducedName,cp,sizeof (reducedName));
 	nameLength = strlen (reducedName);
 	if (nameLength > cs_KEYNM_MAX)
@@ -2121,6 +2234,7 @@ int CSwktToNerth (struct cs_Csdef_ *csDef,struct cs_Eldef_ *elDef,ErcWktFlavor f
 	memset (csDef,'\0',sizeof (*csDef));
 	csDef->wktFlvr = static_cast<short>(flavor);
 	cp = wktElement->GetElementNameC ();
+/* TODO  Could have the same problem here, but this is NERTH and there is little that can be done. */
 	CS_stncp (csDef->desc_nm,cp,sizeof (csDef->desc_nm));
 	CS_stncp (csDef->source,"Extracted from WKT string; description field carries WKT name.",sizeof (csDef->source));
 	CS_stncp (csDef->prj_knm,"NERTH",sizeof (csDef->prj_knm));

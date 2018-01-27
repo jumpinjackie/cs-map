@@ -1476,7 +1476,7 @@ int EXP_LVL3 CScs2WktEx (char *csWktBufr,size_t bufrSize,enum ErcWktFlavor flavo
 																  cs_def->key_nm);
 			if (csMapSt == csMapOk)
 			{
-				CS_stncp (csysWktName,tmpBufr,sizeof (baseName));
+				CS_stncp (csysWktName,tmpBufr,sizeof (tmpBufr));
 			}
 		}
 
