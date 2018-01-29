@@ -594,10 +594,13 @@ int CSdtcsuPhaseOne (struct csDtmBridge_* bridgePtr,struct cs_Dtcprm_ *dtcPtr)
 
 	short idx;
 	short idxCount;
+	unsigned short chkFlags;
 
+	int ii;
 	int gxIndex;
 	int direction;
 	int bridgeStatus;
+	int list_sz;
 
 	Const char* srcDtmName;
 	Const char* trgDtmName;
@@ -605,7 +608,15 @@ int CSdtcsuPhaseOne (struct csDtmBridge_* bridgePtr,struct cs_Dtcprm_ *dtcPtr)
 	struct cs_GeodeticPath_* pathPtr;
 	struct cs_GeodeticPathElement_ *pathElePtr;
 
+	int err_list [12];
+
 	pathPtr = NULL;
+	chkFlags = cs_GPCHK_DATUM | cs_GPCHK_XFORM;
+	list_sz = sizeof (err_list) / sizeof (int);
+	for (ii = 0;ii < list_sz;ii++)
+	{
+		err_list [ii] = 0;
+	}
 
 	/* Make a linear search through the Geodetic Path dictionary looking
 	   for an entry where the source and target match the provided names.
@@ -617,13 +628,22 @@ int CSdtcsuPhaseOne (struct csDtmBridge_* bridgePtr,struct cs_Dtcprm_ *dtcPtr)
 	srcDtmName = CSdtmBridgeGetSourceDtm (bridgePtr);
 	trgDtmName = CSdtmBridgeGetTargetDtm (bridgePtr);
 	pathPtr = CS_gpdefEx (&direction,srcDtmName,trgDtmName);
+
 	if (pathPtr != NULL && direction != cs_DTCDIR_NONE)
 	{
 		/* OK, we found a unique path in the path dictionary for getting from
-		   the source datum to the target datum.  Copy the transformations
-		   indicated by the unique path into the bridge.  We then use
-		   CSdtmBridgeIsComplete to determine the status of the bridge, which
-		   should be (in this particular case) cs_DTCBRG_COMPLETE. */
+		   the source datum to the target datum.  Check the returned path
+		   for validity. */
+		if (CS_gpchk (pathPtr,chkFlags,err_list,list_sz))
+		{
+			CS_stncp (csErrnam,pathPtr->pathName,MAXPATH);
+			CS_erpt (err_list [0]);
+			goto error;
+		}
+
+		/* Copy the transformations indicated by the unique path into the bridge.
+		   We then use CSdtmBridgeIsComplete to determine the status of the bridge,
+		   which should be (in this particular case) cs_DTCBRG_COMPLETE. */
 		idxCount = pathPtr->elementCount;
 		if (idxCount <= 0 || idxCount >= csPATH_MAXXFRM)
 		{
@@ -797,6 +817,10 @@ int CSdtcsuPhaseThree (struct csDtmBridge_* bridgePtr,struct cs_Dtcprm_ *dtcPtr)
 	extern char csErrnam [MAXPATH];
 	extern struct cs_PivotDatumTbl_ cs_PivotDatumTbl [];
 
+	unsigned short chkFlags;
+
+	int ii;
+	int list_sz;
 	int toDirection;
 	int fromDirection;
 
@@ -809,7 +833,9 @@ int CSdtcsuPhaseThree (struct csDtmBridge_* bridgePtr,struct cs_Dtcprm_ *dtcPtr)
 	Const char* srcDtmName;
 	Const char* pvtDtmName;
 	Const char* trgDtmName;
-	
+
+	int err_list [12];
+
 	/* NOTE:  fromPathPtr and toPathPtr are pointers to malloc'ed memory which
 	   MUST BE free'd by somebody eventually.  fromIdxPtr and toIdxPtr are
 	   pointers to in memory caches and MUST _NOT_ BE freed, ever. */
@@ -826,6 +852,12 @@ int CSdtcsuPhaseThree (struct csDtmBridge_* bridgePtr,struct cs_Dtcprm_ *dtcPtr)
 	fromIdxPtr = toIdxPtr = NULL;
 	fromDirection = toDirection = cs_DTCDIR_NONE;
 
+	chkFlags = cs_GPCHK_DATUM | cs_GPCHK_XFORM;
+	list_sz = sizeof (err_list) / sizeof (int);
+	for (ii = 0;ii < list_sz;ii++)
+	{
+		err_list [ii] = 0;
+	}
 	/* Get the datum names of the gap we are currently seeking a bridge
 	   segment for. */
 	srcDtmName = CSdtmBridgeGetSourceDtm (bridgePtr);
@@ -876,6 +908,16 @@ int CSdtcsuPhaseThree (struct csDtmBridge_* bridgePtr,struct cs_Dtcprm_ *dtcPtr)
 		   be used to override and thus enables a user to select the preferred
 		   transformation. */
 		fromPathPtr = CS_gpdefEx (&fromDirection,srcDtmName,pvtDtmName);
+		if (fromPathPtr != NULL)
+		{
+			/* Validate the path. */
+			if (CS_gpchk (fromPathPtr,chkFlags,err_list,list_sz))
+			{
+				CS_stncp (csErrnam,fromPathPtr->pathName,MAXPATH);
+				CS_erpt (err_list [0]);
+				goto error;
+			}
+		}
 		if (fromPathPtr == NULL)
 		{
 			/* Couldn't find a path, so we look for a transformation. */
@@ -900,12 +942,11 @@ int CSdtcsuPhaseThree (struct csDtmBridge_* bridgePtr,struct cs_Dtcprm_ *dtcPtr)
 				/* We didn't find anything, or we found multiple
 				   transformations.  If we didn't find a suitable
 				   transformation, then we just continue building.
-				   
+
 				   If we encountered an error of some sort, or perhaps
 				   multiple transformation possibilities, we break the loop to
 				   essentially abandon this phase, reporting the nature of the
-				   problem through the bridgeStatus return value.
-				*/
+				   problem through the bridgeStatus return value. */
 				if (fromResult == cs_GXIDX_DUPXFRM)
 				{
 					bridgeStatus = cs_DTCBRG_NOTUNIQUE;
@@ -918,7 +959,7 @@ int CSdtcsuPhaseThree (struct csDtmBridge_* bridgePtr,struct cs_Dtcprm_ *dtcPtr)
 				{
 					/* We could not find a transformation from the source
 					   datum to the current pivot datum.  Thus, we
-					   'continue" on to the next pivot datum, skipping the
+					   "continue" on to the next pivot datum, skipping the
 					   search on the target side of the bridge.  The fact that
 					   we were unsuccessful is established by the fact that
 					   both fromPathPtr and fromIdxPtr are NULL.
@@ -942,6 +983,16 @@ int CSdtcsuPhaseThree (struct csDtmBridge_* bridgePtr,struct cs_Dtcprm_ *dtcPtr)
 		   here.  Again, paths take precedence over transformations for the
 		   same reasons described above. */
 		toPathPtr = CS_gpdefEx (&toDirection,pvtDtmName,trgDtmName);
+		if (toPathPtr != NULL)
+		{
+			/* Validate the path. */
+			if (CS_gpchk (toPathPtr,chkFlags,err_list,list_sz))
+			{
+				CS_stncp (csErrnam,toPathPtr->pathName,MAXPATH);
+				CS_erpt (err_list [0]);
+				goto error;
+			}
+		}
 		if (toPathPtr == NULL)
 		{
 			/* No path, look for a transformation. */

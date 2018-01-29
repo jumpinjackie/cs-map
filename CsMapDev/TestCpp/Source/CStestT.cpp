@@ -77,16 +77,68 @@ int CStestT (bool verbose,long32_t duration)
 	clock_t nmDoneClock;
 	double nmExecTime;
 
-	// Exercising GDA2020 systems.
 	int status;
-	//struct cs_Csprm_ *srcCS;
-	//struct cs_Csprm_ *trgCS;
-	//struct cs_Dtcprm_ *dtcprm;
+	struct cs_Csprm_ *srcCrs = NULL;
+	struct cs_Csprm_ *trgCrs = NULL;
+	struct cs_Dtcprm_ *dtcprm = NULL;
 
 	// Mostly to keep lint/compiler happy.
 	nmStartClock = clock ();
 
-	/* Testing the NTv2 code with the humugous BWTA2017 .gsb file. */
+	// Working Ticket #207.
+	// Requires placement of a bogus entry in the definition of the
+	// NSRS11_to_WGS84 geodetic path.
+	double sourceXYZ [3];
+	double workLLH   [3];
+	double targetLLH [3];
+
+	sourceXYZ  [LNG] = -105.00;
+	sourceXYZ  [LAT] =   39.00;
+	sourceXYZ  [HGT] =   0.0;
+	workLLH  [LNG]   =   0.0;
+	workLLH  [LAT]   =   0.0;
+	workLLH  [HGT]   =   0.0;
+	targetLLH  [LNG] =   0.0;
+	targetLLH  [LAT] =   0.0;
+	targetLLH  [HGT] =   0.0;
+
+	status = -1;
+	srcCrs = CS_csloc ("NSRS11.LL");
+	if (srcCrs != NULL)
+	{
+		trgCrs = CS_csloc ("LL84");
+		if (trgCrs != NULL)
+		{
+			dtcprm = CS_dtcsu (srcCrs,trgCrs,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
+			if (dtcprm != NULL)
+			{
+				status = CS_cs2ll (srcCrs,workLLH,sourceXYZ);
+				if (status == 0)
+				{
+					status = status = CS_dtcvt (dtcprm,workLLH,workLLH);
+				}
+				if (status == 0)
+				{
+					status = CS_ll2cs (trgCrs,targetLLH,workLLH);
+				}
+				CS_dtcls (dtcprm);
+			}
+			CS_free (trgCrs);
+		}
+		CS_free (srcCrs);
+	}
+	if (status != 0)
+	{
+		char errMessage [MAXPATH];
+		CS_errmsg (errMessage,MAXPATH);
+		printf ("Error: %s\n",errMessage);
+		err_cnt = 1;
+	}
+	nmDoneClock = clock ();
+
+#ifdef __SKIP__
+	/* Working Ticket # 211  */
+	/* Testing the NTv2 code with the humongous BWTA2017 .gsb file. */
 	struct cs_NTv2_* ntv2Ptr;
 	double sourceLL [3];
 	double deltaLL  [3];
@@ -126,6 +178,7 @@ int CStestT (bool verbose,long32_t duration)
 		err_cnt = 1;
 	}
 	nmDoneClock = clock ();
+#endif
 
 #ifdef __SKIP__
 	/* Testing LL-GDA94 to GDA2020.LL conversion. */
@@ -160,7 +213,7 @@ int CStestT (bool verbose,long32_t duration)
 
 #ifdef __SKIP__
 	/* Testing implementation of the General Polynomial geodetic
-	   transofrmation. */
+	   transformation. */
 	double llIreland [3] = { -6.5000,     55.0000,      0.000};
 	double llEtrs89  [3] = { -6.50094913, 55.00002972,  0.000};
 	double llResult  [3] = {  0.0,         0.0,         0.000};

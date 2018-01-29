@@ -966,14 +966,14 @@ typedef long32_t cs_magic_t;
 /*
 	The following define the characters used in the default
 	processing scheme.  The IDNT characters are used to
-	surround a value which is defaultable.  The CS_MAP
+	surround a value which is default-able.  The CS_MAP
 	library uses the REPL characters to surround a replaced
 	value, indicating that the value came from a default
-	substitutition.
+	substitution.
 
 	Since the IDNT characters actually end up in the dictionaries,
 	it is important that these characters don't change.
-	Therefore, we restict them to compile time options only
+	Therefore, we restrict them to compile time options only
 	by defining them in this header file.
 */
 
@@ -1380,14 +1380,14 @@ typedef long32_t cs_magic_t;
 /*
 	The following codes are used to associate programming in the
 	CS_prjprm module with the table defined in the CSdataPJ
-	module. This somewhat indesirable situation arises from
+	module. This somewhat undesirable situation arises from
 	our desire to keep all English language strings in as few
 	modules as possible.  A specific code value is, essentially,
 	an index into the table defined in CSdataPJ.  A table
 	within CS_prjprm defines the specific entries for a specific
 	projection.
 
-	Note that a specific parmeter, e.g. central meridian, is used
+	Note that a specific parameter, e.g. central meridian, is used
 	for several projections.  We keep a single copy of this
 	definition and reuse it for several projections.
 */
@@ -1616,7 +1616,7 @@ enum EcsWktParameter {	csWktPrmNone = 0,
    variation.  This value indicates the required parameters for each
    projection and/or variation of same.  This value should go into the
    projection table.  Since CS-MAP is on life support, we may find a
-   less disruptive way of tdoing this.
+   less disruptive way of doing this.
 
    This issue really only applies to doubles where a zero is also a
    valid value.  We include Units in this just for consistency.
@@ -1840,7 +1840,7 @@ struct cs_Eldef05_
 	double e_rad;           /* Equatorial radius IN METERS. */
 	double p_rad;           /* Polar radius IN METERS. */
 	double flat;            /* Flattening ratio, e.g. 1.0/297.0 */
-	double ecent;           /* Ecentricity. */
+	double ecent;           /* Eccentricity. */
 	short protect;          /* TRUE indicates that this is a
 							   distribution definition.  Typically
 							   used to require a confirmation before
@@ -2052,10 +2052,10 @@ struct cs_GrfMreg06_
 };
 #define cs_BSWP_GRFMREG06 "ll4c4l4l4lddd150d"
 
-/* The following structure definitions defin the form of the Coordinate System
+/* The following structure definitions define the form of the Coordinate System
    Category feature.  The Category Feature is another means by which coordinate
    systems can be organized; primarily for the purposes of coordinate system
-   browers.  Categories differ from groups in that a coordinate system can
+   browsers.  Categories differ from groups in that a coordinate system can
    belong to more than one category; while a coordinate system can only belong
    to a single group. */
 
@@ -2139,7 +2139,7 @@ struct cs_Ctdef_
 
 	Therefore, take care not to get these three different
 	structures confused.  In general, programs which manipulate
-	the contents of the dicionaries involved will used the
+	the contents of the dictionaries involved will used the
 	cs_Eldef_ and cs_Dtdef_ structures while programs which
 	actually perform calculations will use CS_dtloc to obtain
 	a pointer to a malloc'ed cs_Datum_ structure and use its
@@ -2159,7 +2159,7 @@ struct cs_Eldef_
 	double e_rad;           /* Equatorial radius IN METERS. */
 	double p_rad;           /* Polar radius IN METERS. */
 	double flat;            /* Flattening ratio, e.g. 1.0/297.0 */
-	double ecent;           /* Ecentricity. */
+	double ecent;           /* Eccentricity. */
 	char name [64];         /* Full descriptive name of the
 							   datum. */
 	char source [64];		/* Description of where the data for this
@@ -2227,7 +2227,7 @@ struct cs_Dtdef_
 						   and POSC country abbreviations in upper
 						   case. This also, is intended for use by
 						   a coordinate system selector program. */
-	char fill [8];		/* Fill the sturcture out to a boundary
+	char fill [8];		/* Fill the structure out to a boundary
 						   of 8 bytes, for portability
 						   considerations.  Note, we need some
 						   fill, even if 8 bytes, to provide a
@@ -2298,9 +2298,9 @@ struct cs_Dtdef_
 						   .
 						   */
 	short epsgNbr;		/* EPSG number, if known */
-	short wktFlvr;		/* WKT flavor, if dervied from WKT, else zero */
-	short fill01;		/* Fill out to a multple of 16 to avoid
-						   affects of byte aligment options in
+	short wktFlvr;		/* WKT flavor, if derived from WKT, else zero */
+	short fill01;		/* Fill out to a multiple of 16 to avoid
+						   affects of byte alignment options in
 						   many compilers. */
 	short fill02;		/* Ditto. */
 	short fill03;		/* Ditto. */
@@ -2328,7 +2328,7 @@ struct cs_Datum_
 	double e_rad;		/* Equatorial radius in meters. */
 	double p_rad;		/* Polar radius in meters. */
 	double flat;		/* Flattening ratio, e.g. 1.0/297.0 */
-	double ecent;		/* Ecentricity (note, not squared). */
+	double ecent;		/* Eccentricity (note, not squared). */
 	double delta_X;		/* Position of the geocenter relative to
 						   WGS-84 in meters. */
 	double delta_Y;
@@ -2444,7 +2444,7 @@ struct cs_Csdef_
 							   the units of the resulting coordinates. */
 	double scl_red;			/* The scale reduction which is used
 							   on some projections to distribute
-							   the distortion uniformily across
+							   the distortion uniformly across
 							   the map, else 1.0. */
 	double unit_scl;		/* The scale factor required to get
 							   from coordinate system units to meters
@@ -2508,7 +2508,7 @@ struct cs_Csdef_
 				   converted???  If the min is
 				   greater than the max, the
 				   setup function generates these
-				   automatcially. */
+				   automatically. */
 	double ll_min [2];
 	double ll_max [2];
 				/* XY's outside the rectangle
@@ -2517,7 +2517,7 @@ struct cs_Csdef_
 				   converted???  If the min is
 				   greater than the max, the
 				   setup function generates these
-				   automatcially. */
+				   automatically. */
 	double xy_min [2];
 	double xy_max [2];
 
@@ -2535,7 +2535,7 @@ struct cs_Csdef_
 							   so this field is currently ignored. */
 	short zones;			/* Number of zones in an interrupted
 							   coordinate system definition, such
-							   as sinusoidal and Goode homolosine.
+							   as sinusoidal and Goode Homolosine.
 							   Currently, the number of zones is
 							   automatically calculated and this
 							   field is ignored. This, of course,
@@ -2544,12 +2544,12 @@ struct cs_Csdef_
 							   be protected from being changed by
 							   users. */
 	short epsg_qd;			/* In the same form as the quad member of this
-							   structure, this elelment carries quad as
+							   structure, this element carries quad as
 							   specified by the EPSG database, originally
 							   populated with values from EPSG 7.05 */
 	short srid;				/* The Oracle SRID number if known, else 0. */
 	short epsgNbr;			/* EPSG number, if known */
-	short wktFlvr;			/* WKT flavor, if dervied from WKT, else zero */
+	short wktFlvr;			/* WKT flavor, if derived from WKT, else zero */
 };
 #define cs_BSWP_CSDEF "24c24c24c24c24c24c48c16c8c24ddddddddd2ddddd2d2d2d2d64c64cssss4s"
 
@@ -2608,7 +2608,7 @@ struct cs_Cmplx_
 struct cs_MmcofF_
 {
 	double rect_rad;		/* Radius of the rectifying sphere, includes
-							   scale reduction where approriate. */
+							   scale reduction where appropriate. */
 	double a_prime;			/* Horner coefficients. */
 	double b_prime;
 	double c_prime;
@@ -2621,7 +2621,7 @@ struct cs_MmcofF_
 struct cs_MmcofI_
 {
 	double rect_rad;		/* Radius of the rectifying sphere, includes
-							   scale reduction where approriate. */
+							   scale reduction where appropriate. */
 	double coef_0;
 	double coef_2;
 	double coef_4;
@@ -2646,7 +2646,7 @@ struct cs_MpcofF_
 	The following structures are used to carry the coefficients
 	required for a computation of geographic latitude from the
 	conformal latitude, Chi, and vice versa. The element
-	names are taken from Synder, Map Projections - A Working
+	names are taken from Snyder, Map Projections - A Working
 	Manual, U.S. Geological Survey Professional Paper 1395.
 */
 
@@ -2802,13 +2802,13 @@ struct cs_Lmbrt_
 							   29.2985 seconds (in radians) if Belgian. */
 	double e_rad;			/* Equatorial radius of the ellipsoid in
 							   use.a */
-	double ecent;			/* The ecentricity of the datum in
+	double ecent;			/* The eccentricity of the datum in
 							   use. */
-	double e_sq;			/* The square of the ecentricity of the
+	double e_sq;			/* The square of the eccentricity of the
 							   datum in use. */
-	double e_ovr_2;			/* One half of the ecentricity. */
+	double e_ovr_2;			/* One half of the eccentricity. */
 	double pole_test;		/* The length, in coordinate system units,
-							   of the equialent of .001 seconds of
+							   of the equivalent of .001 seconds of
 							   arc, used to test a cartesian coordinate
 							   for proximity with a pole. */
 	double theta_max;		/* Maximum magnitude of theta which is
@@ -2897,7 +2897,7 @@ struct cs_Trmer_
 							   central meridian.  In either
 							   case, it represents the longitude
 							   origin.  The value is in radians. */
-	double org_lat;			/* Latiude of the origin of the
+	double org_lat;			/* Latitude of the origin of the
 							   map.  This is usually zero for
 							   standard UTM maps.  However,
 							   it is set to specific values
@@ -2928,12 +2928,12 @@ struct cs_Trmer_
 							   by two. */
 	double var_K;			/* Scale factor used by certain
 							   variations of the basic projection. */
-	double eprim_sq;		/* The ecenticity prime squared
+	double eprim_sq;		/* The eccentricity prime squared
 							   value required by the transformation
 							   which can be computed once, once
 							   the datum has been specified. */
 	double xx_max;			/* The X coordinate value, in user units,
-							   but not includeing false origin, which
+							   but not including false origin, which
 							   we use to approximate the eastern and
 							   western extents of the projectionable
 							   region. */
@@ -2966,9 +2966,9 @@ struct cs_Trmer_
 	double affineDenom;		/* Constant term used in the affine inverse. */
 
 	struct cs_MmcofF_ mmcofF;/* Coefficients necessary to compute
-							   meridonal distance from the equator. */
-	struct cs_MmcofI_ mmcofI;/* Coeffieients necessary to compute the
-							   foot print lataitude. */
+							   meridional distance from the equator. */
+	struct cs_MmcofI_ mmcofI;/* Coefficients necessary to compute the
+							   foot print latitude. */
 	struct cs_ChicofF_ chicofF;/* Coefficients for calculating conformal
 								  latitude by series */
 	struct cs_ChicofI_ chicofI;/* Coefficients for converting conformal
@@ -3001,7 +3001,7 @@ struct cs_Trmrs_
 							   central meridian.  In either
 							   case, it represents the longitude
 							   origin.  The value is in radians. */
-	double org_lat;			/* Latiude of the origin of the
+	double org_lat;			/* Latitude of the origin of the
 							   map.  This is usually zero for
 							   standard UTM maps.  However,
 							   it is set to specific values
@@ -3030,7 +3030,7 @@ struct cs_Trmrs_
 	double Rk;				/* Scaled radius of the earth. */
 	double Rk_ovr_2;		/* Scaled radius of the earth divided
 							   by two. */
-	double eprim_sq;		/* The ecenticity prime squared
+	double eprim_sq;		/* The eccentricity prime squared
 							   value required by the transformation
 							   which can be computed once, once
 							   the datum has been specified. */
@@ -3108,9 +3108,9 @@ struct cs_Alber_
 	double y_off;			/* The false northing, in coordinate
 							   system units. */
 	double ka;
-	double ecent;			/* The ecentricity of the datum in
+	double ecent;			/* The eccentricity of the datum in
 							   use. */
-	double e_sq;			/* The square of the ecentricity of the
+	double e_sq;			/* The square of the eccentricity of the
 							   datum in use. */
 
 				/* The following are parameters
@@ -3254,8 +3254,8 @@ struct cs_Oblqm_
 	short uv_ctr;			/* TRUE (i.e. non-zero) indicates that
 							   the unrectified coordinates are to be related
 							   to the projection center, as opposed to
-							   the projection origin. */			
-	short rect_flg;			/* Sepcifies if, and how, the cartesian
+							   the projection origin. */
+	short rect_flg;			/* Specifies if, and how, the cartesian
 							   coordinates are to be rectified. */
 	short azmIsSkew;		/* Flag which indicates at the point on the
 							   central geodesic the azimuth parameter
@@ -3289,7 +3289,7 @@ struct cs_Mrcat_
 	double cent_lng;		/* Longitude of the central meridian.
 							   It represents the longitude origin.
 							   The value is in radians. */
-	double std_lat;			/* Latiude of the standard parallel
+	double std_lat;			/* Latitude of the standard parallel
 							   of the system.  This is usually zero
 							   for most uses of the Mercator.
 							   Non-zero values have the same affect
@@ -3310,7 +3310,7 @@ struct cs_Mrcat_
 							   scaling. */
 
 				/* Datum values captured from the
-				   active dataum, repeated here
+				   active datum, repeated here
 				   to prevent recalculation. */
 	double ecent;
 	double e_sq;
@@ -3334,9 +3334,9 @@ struct cs_Mrcat_
 							   Includes the possible affect of a
 							   standard parallel other than the
 							   equator. (Rfact / 2.0) */
-	double yy_max;			/* The Y value which arbitraly use to
+	double yy_max;			/* The Y value which arbitrarily use to
 							   represent the north pole which should,
-							   theoretically, be infinitiy.  Does
+							   theoretically, be infinity.  Does
 							   not include the false origin, if
 							   any. */
 	double eastLimit;		/* The eastern limit of the range of the
@@ -3372,7 +3372,7 @@ struct cs_Mrcat_
 							   system. */
 	unsigned short prj_code;
 							/* Implementation of the Popular
-							   Visualisation Pseudo Mercator
+							   Visualization Pseudo Mercator
 							   requires something to tell the
 							   calculation functions which
 							   variation is being used (specifically
@@ -3423,7 +3423,7 @@ struct cs_Azmed_
 							   integer.  An integer value outside
 							   of the range of 1 thru 4 is
 							   considered to be a 1. */
-	double ka;				/* The scaled equitorial radius. */
+	double ka;				/* The scaled equatorial radius. */
 	double two_ka;			/* 2 * ka */
 	double x_scale;			/* A scale factor to be applied
 							   independently to the X values of the
@@ -3437,7 +3437,7 @@ struct cs_Azmed_
 							   handed coordinate systems. */
 	double ecent;			/* Eccentricity of the ellipsoid being
 							   used. */
-	double e_sq;			/* Sqaure of the eccentricity. */
+	double e_sq;			/* Square of the eccentricity. */
 	double one_esq;			/* One minus eccentricity squared. */
 	double rt_one_esq;		/* sqrt (One minus eccentricity squared). */
 
@@ -3456,10 +3456,10 @@ struct cs_Azmed_
 
 	struct cs_MmcofF_ mmcofF;
 							/* The coefficients necessary to compute
-							   meridonal distance from the equator. */
+							   meridional distance from the equator. */
 	struct cs_MmcofI_ mmcofI;
 							/* The coefficients necessary to compute
-							   latitude from the meridonal distance. */
+							   latitude from the meridional distance. */
 
 	double Mp;				/* Distance of the pole from the equator
 							   for this ellipsoid. */
@@ -3467,7 +3467,7 @@ struct cs_Azmed_
 							   the equator for this ellipsoid. */
 	double e_sin_p1;		/* e * sine (org_lat) */
 	double e_cos_p1;		/* e * cos (org_lat) */
-	double N1;				/* N1 per Synder, page 199. */
+	double N1;				/* N1 per Snyder, page 199. */
 	double psi_t1;			/* e * e * N1 * sin (org_lat) */
 	double G;				/* e * sin_org_lat / rt_one_esq */
 	double G_sq_3;			/* 3.0 times G squared */
@@ -3536,9 +3536,9 @@ struct cs_Plycn_
 {
 	double cent_lng;		/* Longitude of the central meridian,
 							   in radians. */
-	double org_lat;			/* Latiude of the origin of the
+	double org_lat;			/* Latitude of the origin of the
 							   map.  That is, the latitude
-							   which is orthoginal to the
+							   which is orthogonal to the
 							   central meridian.  The value
 							   is in radians. */
 	double x_off;			/* The offset to be added to the
@@ -3550,7 +3550,7 @@ struct cs_Plycn_
 	double y_off;			/* The y offset, applied after
 							   scaling. */
 				/* Datum values captured from the
-				   active dataum, repeated here
+				   active datum, repeated here
 				   to prevent recalculation. */
 	double ecent;			/* Ellipsoid eccentricity. */
 	double e_sq;			/* Ellipsoid eccentricity squared. */
@@ -3579,7 +3579,7 @@ struct cs_Plycn_
 							   of all geodetic locations on the
 							   equator.  (Normal calculation are
 							   indeterminate on the equator.) */
-	double M0;				/* The meridonal distance from the equator
+	double M0;				/* The meridional distance from the equator
 							   to the origin latitude. */
 	double max_rho;			/* Cartesian distance from the intersection
 							   of the equator and the origin longitude
@@ -3589,7 +3589,7 @@ struct cs_Plycn_
 	double max_rho_sq;		/* Max_rho, squared. For performance. */
 	struct cs_MmcofF_ mmcofF;
 				/* The coefficients necessary to compute
-				   meridonal distance from the equator. */
+				   meridional distance from the equator. */
 	struct cs_MpcofF_ mpcofF;
 							/* Coefficients necessary to compute Mp. */
 	short quad;				/* Non-zero specifies a cartesian system
@@ -3671,14 +3671,14 @@ struct cs_Modpc_
 	double Q_y;
 	struct cs_MmcofF_ mmcofF;
 							/* Coefficients necessary to compute
-							   meridonal distance from the equator. */
+							   meridional distance from the equator. */
 	short quad;				/* Non-zero specifies a cartesian system
 							   other than the standard right handed
 							   system. */
 };
 
 /*
-	The following supports the Lambert Equal Area Azmuthal
+	The following supports the Lambert Equal Area Azimuthal
 	projection.
 */
 
@@ -3715,7 +3715,7 @@ struct cs_Azmea_
 							   of the range of 1 thru 4 is
 							   considered to be a 1. */
 
-	double ka;				/* The scaled equitorial radius.  Used
+	double ka;				/* The scaled equatorial radius.  Used
 							   as the radius of the sphere, i.e.
 							   R in the reference. */
 	double x_scale;			/* A scale factor to be applied
@@ -3725,7 +3725,7 @@ struct cs_Azmea_
 							   handed coordinate systems. */
 	double y_scale;			/* A scale factor to be applied
 							   independently to the Y values of the
-							   coordinate system.  Specically
+							   coordinate system.  Specifically
 							   intended for use to handle left
 							   handed coordinate systems. */
 	double one_mm;			/* Actually, one tenth of a millimeter
@@ -3734,7 +3734,7 @@ struct cs_Azmea_
 							   values. */
 	double ecent;			/* Eccentricity of the ellipsoid being
 							   used. */
-	double e_sq;			/* Sqaure of the eccentricity. */
+	double e_sq;			/* Square of the eccentricity. */
 	double one_o_2e;		/* One divided by (o) two times
 							   the eccentricity. */
 	double one_esq;			/* One minus eccentricity squared. */
@@ -3800,9 +3800,9 @@ struct cs_Edcnc_
 							   numbers in the resulting map. */
 	double y_off;			/* A value used to preclude negative
 							   numbers in the map. */
-	double ecent;			/* The ecentricity of the datum in
+	double ecent;			/* The eccentricity of the datum in
 							   use. */
-	double e_sq;			/* The square of the ecentricity of the
+	double e_sq;			/* The square of the eccentricity of the
 							   datum in use. */
 
 	double n;				/* The cone constant. */
@@ -3817,10 +3817,10 @@ struct cs_Edcnc_
 	double max_theta;		/* The maximum polar angle. */
 	struct cs_MmcofF_ mmcofF;
 							/* The coefficients necessary to compute
-							   meridonal distance from the equator. */
+							   meridional distance from the equator. */
 	struct cs_MmcofI_ mmcofI;
-							/* Coeffieients neceaary to compute the
-							   foot print lataitude. */
+							/* Coefficients necessary to compute the
+							   foot print latitude. */
 	short quad;				/* Non-zero specifies a cartesian system
 							   other than the standard right handed
 							   system. */
@@ -4224,7 +4224,7 @@ struct cs_Gnomc_
 	double y_off;			/* The coordinate system Y value for the
 							   origin point, also known as the
 							   False Northing. */
-	double ka;				/* The scaled equitorial radius.  Used
+	double ka;				/* The scaled equatorial radius.  Used
 							   as the radius of the sphere, i.e.
 							   R in the reference. */
 	double one_mm;			/* Actually, one tenth of a millimeter
@@ -4274,24 +4274,24 @@ struct cs_Edcyl_
 							   units.  Used to trap zero coordinate
 							   values. */
 	double e_rad;			/* Equatorial radius of the ellipsoid. */
-	double ecent;			/* The ecentricity of the datum in
+	double ecent;			/* The eccentricity of the datum in
 							   use. */
-	double e_sq;			/* The square of the ecentricity of the
+	double e_sq;			/* The square of the eccentricity of the
 							   datum in use. */
 
-	double nu0;				/* radius of curvatire of the first vertical
+	double nu0;				/* radius of curvature of the first vertical
 							   section of the ellipsoid at the reference
 							   latitude. */
 	double cos_ref_lat;		/* Cosine of the reference latitude. */
 	double Rcos_ref_lat;	/* Cosine of the reference latitude times
 							   the scaled equatorial radius. */
-	double M0;				/* Meridonal distance from the equator
+	double M0;				/* Meridional distance from the equator
 							   to the origin latitude. */
 	struct cs_MmcofF_ mmcofF;
 							/* The coefficients necessary to compute
-							   meridonal distance from the equator. */
+							   meridional distance from the equator. */
 	struct cs_MmcofI_ mmcofI;
-							/* Coeffieients necessary to compute the
+							/* Coefficients necessary to compute the
 							   foot print latitude. */
 	short quad;				/* Non-zero specifies a cartesian system
 							   other than the standard right handed
@@ -4313,7 +4313,7 @@ struct cs_Vdgrn_
 	double y_off;			/* The coordinate system Y value for the
 							   origin point, also known as the
 							   False Northing. */
-	double ka;				/* The scaled equitorial radius.  Used
+	double ka;				/* The scaled equatorial radius.  Used
 							   as the radius of the sphere, i.e.
 							   R in the reference. */
 	double one_mm;			/* Actually, one tenth of a millimeter
@@ -4365,16 +4365,16 @@ struct cs_Csini_
 	double R_term;			/* ka / (1.0 - e_sq) */
 	double s_term;			/* 2.0 * (ka * ka) * (1.0 - e_sq) */
 
-	double M0;				/* The meridonal distance from the equator
+	double M0;				/* The meridional distance from the equator
 							   to the origin latitude. */
 	struct cs_MmcofF_ mmcofF;
 							/* The coefficients necessary to compute
 							   the distance from the equator to a
 							   parallel on the ellipsoid along a
-							   meridian, i.e. meridonal distance. */
+							   meridian, i.e. meridional distance. */
 	struct cs_MmcofI_ mmcofI;
 							/* The coefficients of the series expansion
-							   for converting the recifying latitude,
+							   for converting the rectifying latitude,
 							   Mu, to the ellipsoidal geodetic
 							   latitude.  See MmuIsu and MmuIcal. */
 	short quad;				/* Non-zero specifies a cartesian system
@@ -4418,10 +4418,10 @@ struct cs_Robin_
 	double yy_max;			/* Maximum magnitude of the Y value for
 							   this coordinate system, sans false
 							   northing. */
-	double one_cm;			/* The equivalent of one centiimeter in
+	double one_cm;			/* The equivalent of one centimeter in
 							   the units of the coordinate system.
 							   Close enough for a projection which
-							   is only supported in the sphereical
+							   is only supported in the spherical
 							   form. */
 	short quad;				/* Non-zero specifies a cartesian system
 							   other than the standard right handed
@@ -4453,7 +4453,7 @@ struct cs_Bonne_
 	double y_off;			/* The y offset, applied after
 							   scaling. */
 			/* Datum values captured from the
-			   active dataum, repeated here
+			   active datum, repeated here
 			   to prevent recalculation. */
 	double ecent;			/* Ellipsoid eccentricity. */
 	double e_sq;			/* Ellipsoid eccentricity squared. */
@@ -4463,7 +4463,7 @@ struct cs_Bonne_
 							   includes unit scaling (from meters
 							   to the coordinate system unit) and
 							   the map scale factor. */
-	double ka;				/* Scaled equitorial radius of the earth,
+	double ka;				/* Scaled equatorial radius of the earth,
 							   in the units of the coordinate system. */
 	double small_xy;		/* Equivalent of 0.001 seconds of arc at
 							   the north pole, in cartesian system
@@ -4526,7 +4526,7 @@ struct cs_Ekrt4_
 	double y_off;			/* The y offset, applied after
 							   scaling. */
 				/* Datum values captured from the
-				   active dataum, repeated here
+				   active datum, repeated here
 				   to prevent recalculation. */
 	double e_rad;			/* Usually referred to as "a", the
 							   equatorial radius of the ellipsoid. */
@@ -4534,7 +4534,7 @@ struct cs_Ekrt4_
 							   includes unit scaling (from meters
 							   to the coordinate system unit) and
 							   the map scale factor. */
-	double ka;				/* Scaled equitorial radius of the earth,
+	double ka;				/* Scaled equatorial radius of the earth,
 							   in the units of the coordinate system. */
 	double one_cm;			/* Equivalent of one centimeter on the
 							   ellipsoid in the units of the scaled
@@ -4574,7 +4574,7 @@ struct cs_Ekrt6_
 	double y_off;			/* The y offset, applied after
 							   scaling. */
 				/* Datum values captured from the
-				   active dataum, repeated here
+				   active datum, repeated here
 				   to prevent recalculation. */
 	double e_rad;			/* Usually referred to as "a", the
 							   equatorial radius of the ellipsoid. */
@@ -4582,7 +4582,7 @@ struct cs_Ekrt6_
 							   includes unit scaling (from meters
 							   to the coordinate system unit) and
 							   the map scale factor. */
-	double ka;				/* Scaled equitorial radius of the earth,
+	double ka;				/* Scaled equatorial radius of the earth,
 							   in the units of the coordinate system. */
 	double one_cm;			/* Equivalent of one centimeter on the
 							   ellipsoid in the units of the scaled
@@ -4600,7 +4600,7 @@ struct cs_Ekrt6_
 	double kF_y;			/* Constant used in the forward
 							   calculation of Y. */
 	double kI_theta;		/* Constant used in the inverse
-							   calulation of theta. */
+							   calculation of theta. */
 	double kI_lat;			/* Constant used in the inverse
 							   calculation of latitude. */
 	double kI_lng;			/* Constant used in the inverse
@@ -4626,7 +4626,7 @@ struct cs_Molwd_
 	double y_off;			/* The y offset, applied after
 							   scaling. */
 				/* Datum values captured from the
-				   active dataum, repeated here
+				   active datum, repeated here
 				   to prevent recalculation. */
 	double e_rad;			/* Usually referred to as "a", the
 							   equatorial radius of the ellipsoid. */
@@ -4634,7 +4634,7 @@ struct cs_Molwd_
 							   includes unit scaling (from meters
 							   to the coordinate system unit) and
 							   the map scale factor. */
-	double ka;				/* Scaled equitorial radius of the earth,
+	double ka;				/* Scaled equatorial radius of the earth,
 							   in the units of the coordinate system. */
 	double one_cm;			/* Equivalent of one centimeter on the
 							   ellipsoid in the units of the scaled
@@ -4648,11 +4648,11 @@ struct cs_Molwd_
 	double kF_y;			/* Constant used in the forward
 							   calculation of Y. */
 	double kI_theta;		/* Constant used in the inverse
-							   calulation of theta. */
+							   calculation of theta. */
 	double kI_lng;			/* Constant used in the inverse
 							   calculation of longitude. */
 	struct cs_Zone_ zones [8];
-							/* Definition of any interupted zones
+							/* Definition of any interrupted zones
 							   if zone_cnt is not zero. */
 	short zone_cnt;
 	short quad;				/* Non-zero specifies a cartesian system
@@ -4679,7 +4679,7 @@ struct cs_Hmlsn_
 	double y_off;			/* The y offset, applied after
 							   scaling. */
 				/* Datum values captured from the
-				   active dataum, repeated here
+				   active datum, repeated here
 				   to prevent recalculation. */
 	double e_rad;			/* Usually referred to as "a", the
 							   equatorial radius of the ellipsoid. */
@@ -4687,7 +4687,7 @@ struct cs_Hmlsn_
 							   includes unit scaling (from meters
 							   to the coordinate system unit) and
 							   the map scale factor. */
-	double ka;				/* Scaled equitorial radius of the earth,
+	double ka;				/* Scaled equatorial radius of the earth,
 							   in the units of the coordinate system. */
 	double one_cm;			/* Equivalent of one centimeter on the
 							   ellipsoid in the units of the scaled
@@ -4709,7 +4709,7 @@ struct cs_Hmlsn_
 	double kF_y;			/* Constant used in the forward
 							   calculation of Mollweide Y. */
 	double kI_theta;		/* Constant used in the inverse
-							   calulation of Mollweide theta. */
+							   calculation of Mollweide theta. */
 	double kI_lng;			/* Constant used in the inverse
 							   calculation of Mollweide longitude. */
 	double yy_crct;			/* Y correction factor to bring
@@ -4731,14 +4731,14 @@ struct cs_Hmlsn_
 };
 
 /*
-	The following structure is ued for the Normal Aspect
+	The following structure is used for the Normal Aspect
 	of the Equal Area Cylindrical projection.  The Transverse
 	Aspect (and sometime even the oblique aspect) are treated
 	as separate projections since the parameters are significantly
 	different.
 
 	Note the naming convention here is Normal Authalic CYLindrical.
-	Authalic essentially is synonomous with equal area.  The other
+	Authalic essentially is synonymous with equal area.  The other
 	aspects will be named TACYL (Transverse Authalic CYLindrical
 	and OACYL (Oblique Authalic CYLindrical).
 */
@@ -4750,7 +4750,7 @@ struct cs_Nacyl_
 							   has an effect in this projection
 							   similar to the scale reduction factor
 							   of the Transverse aspect. AKA
-							   standard latiude.  This is the
+							   standard latitude.  This is the
 							   latitude at which the K scale
 							   factor (scale along a parallel) is
 							   1.0. */
@@ -4763,7 +4763,7 @@ struct cs_Nacyl_
 	double y_off;			/* The y offset, applied after
 							   scaling. */
 				/* Datum values captured from the
-				   active dataum, repeated here
+				   active datum, repeated here
 				   to prevent recalculation. */
 	double e_rad;			/* Usually referred to as "a", the
 							   equatorial radius of the ellipsoid. */
@@ -4771,7 +4771,7 @@ struct cs_Nacyl_
 							   includes unit scaling (from meters
 							   to the coordinate system unit) and
 							   the map scale factor. */
-	double ka;				/* Scaled equitorial radius of the earth,
+	double ka;				/* Scaled equatorial radius of the earth,
 							   in the units of the coordinate system. */
 	double ecent;			/* Ellipsoid eccentricity. */
 	double e_sq;			/* Ellipsoid eccentricity squared. */
@@ -4802,7 +4802,7 @@ struct cs_Nacyl_
 	double beta_term;		/* This term includes all factors
 							   necessary to compute the sine of
 							   Beta, given Y, by multiplication.
-							   Using Synder's notation: 2*k0/a*qp */
+							   Using Snyder's notation: 2*k0/a*qp */
 	struct cs_BtcofI_ btcoefI;
 							/* Coefficients for the inverse
 							   calculation (i.e. power series) of
@@ -4821,7 +4821,7 @@ struct cs_Nacyl_
 struct cs_Tacyl_
 {
 	double org_lng;			/* Origin longitude in radians. */
-	double org_lat;			/* Origin lattiude in radians. */
+	double org_lat;			/* Origin latitude in radians. */
 	double h0;				/* This is the actual scale reduction
 							   factor.  We need this unencumbered
 							   by other scale factors because of the
@@ -4835,7 +4835,7 @@ struct cs_Tacyl_
 	double y_off;			/* The y offset, applied after
 							   scaling. */
 				/* Datum values captured from the
-				   active dataum, repeated here
+				   active datum, repeated here
 				   to prevent recalculation. */
 	double e_rad;			/* Usually referred to as "a" or "R", the
 							   equatorial radius of the ellipsoid. */
@@ -4843,7 +4843,7 @@ struct cs_Tacyl_
 							   includes unit scaling (from meters
 							   to the coordinate system unit) and
 							   the map scale factor. */
-	double ka;				/* Scaled equitorial radius of the earth,
+	double ka;				/* Scaled equatorial radius of the earth,
 							   in the units of the coordinate system.
 							   Note, for this projection this does
 							   not include the scale reduction factor. */
@@ -4862,10 +4862,10 @@ struct cs_Tacyl_
 	double ka_o_h0;			/* Scaled equatorial radius divided by the
 							   scale reduction factor (ka / h0). */
 	double h0_o_ka;			/* Reciprocal of ka_o_h0. */
-	double aterm;			/* aterm */
+	double aterm;			/* a term */
 	double qp;				/* The value of q evaluated at the north
 							   pole. */
-	double M0;				/* Meridonal distance along the central
+	double M0;				/* Meridional distance along the central
 							   meridian from the equator to the
 							   origin latitude. */
 
@@ -4960,10 +4960,10 @@ struct cs_Bpcnc_
 	*******************************************************************
 	**                                                               **
 	**  The "Swiss" projection has now been generalized to be a      **
-	**  Conformal Oblique Cylindrial Projection.  This enables the   **
+	**  Conformal Oblique Cylindrical Projection.  This enables the   **
 	**  implementation here to function as a Hungarian EOV           **
 	**  as well.  This was accomplished by adding a scale reduction  **
-	**  factor as well as a "Normall Parallel".                      **
+	**  factor as well as a "Normal Parallel".                      **
 	**                                                               **
 	*******************************************************************
 	*******************************************************************
@@ -4987,10 +4987,10 @@ struct cs_Swiss_
 							   units. */
 	double y_off;			/* The false northing in coordinate system
 							   units. */
-	double ecent;			/* The ecentricity of the ellipsoid in use. */
-	double e_sq;			/* The square of the ecentricity of the
+	double ecent;			/* The eccentricity of the ellipsoid in use. */
+	double e_sq;			/* The square of the eccentricity of the
 							   ellipsoid in use. */
-	double e_ovr_2;			/* One half of the ecentricity. */
+	double e_ovr_2;			/* One half of the eccentricity. */
 
 		/* The following are parameters which can be computed once
 		   given the above information. Nomenclature follows that
@@ -5006,7 +5006,7 @@ struct cs_Swiss_
 	double N0;				/* Radius of curvature of the first prime
 							   vertical at the central point. In units of
 							   the cartesian system.  */
-	double m0;				/* Scale reduction factor. */				
+	double m0;				/* Scale reduction factor. */
 	double alpha;			/* Differential equation adjustment factor to
 							   obtain zero scale distortion at the central
 							   point. */
@@ -5029,9 +5029,9 @@ struct cs_Swiss_
 
 /*
 	The following structure defines the construction of the Krovak
-	projection, a form of Oblique Conic Projection and officialy
+	projection, a form of Oblique Conic Projection and officially
 	adopted in 1927 for use in defining the coordinate system for
-	(at that time) Cechoslovakia.
+	(at that time) Czechoslovakia.
 
 	One might think that this would just be a variation of a more
 	general Oblique Conformal Conic implementation, but there were
@@ -5047,13 +5047,13 @@ struct cs_Swiss_
 struct cs_Krovk_
 {
 		/* The next five values could be considered parameters,
-		   but are hard coded in the setup function for Cechoslovakia. */
+		   but are hard coded in the setup function for Czechoslovakia. */
 	double orgLng;			/* Longitude of central point, on the ellipsoid
 							   (Bessel 1841), in radians */
 	double orgLat;			/* Latitude of central point, on the ellipsoid
 							   (Bessel 1841), in radians */
-	double poleLng;			/* Longitude of oblique pole, on the ellisoid
-							   in radians. */			
+	double poleLng;			/* Longitude of oblique pole, on the ellipsoid
+							   in radians. */
 	double poleLat;			/* Latitude of oblique pole, on the ellipsoid
 							   in radians */
 	double stdLat;			/* Latitude, on the oblique sphere, of the
@@ -5072,12 +5072,12 @@ struct cs_Krovk_
 							   system units are. */
 	double e_rad;			/* Equatorial radius of the ellipsoid in use,
 							   IN METERS!!!. */
-	double ecent;			/* The ecentricity of the ellipsoid in use. */
+	double ecent;			/* The eccentricity of the ellipsoid in use. */
 
 		/* The rest of this stuff is calculated by the set up function. */
-	double e_sq;			/* The square of the ecentricity of the
+	double e_sq;			/* The square of the eccentricity of the
 					   ellipsoid in use. */
-	double e_ovr_2;			/* One half of the ecentricity. */
+	double e_ovr_2;			/* One half of the eccentricity. */
 	double N0;				/* Basic radius used in several places.  Don't
 							   actually know what this radius is. */
 	double kR;				/* used in the scale calculations. */
@@ -5092,26 +5092,26 @@ struct cs_Krovk_
 	double nn;				/* The cone constant for the spherical
 							   conic calculation, sin of stdLat. */
 	double rho0;			/* radius of the circle on the conic which
-							   represents the origin latiude for the
+							   represents the origin latitude for the
 							   conic. */
 	double resolve;			/* The delta value used by the inverse function
 							   to terminate the iteration.  Essentially
 							   0.001 seconds of arc. */
 	double one_o_nn;		/* One over nn. */
-	double tanTermF;		/* constant term used in the foward function. */
+	double tanTermF;		/* constant term used in the forward function. */
 	double tanTermI;		/* constant term used in the inverse function */ 
 
 	double orgLngS;			/* Origin longitude converted to the
-							   gausian surface. */
+							   Gaussian surface. */
 	double orgLatS;			/* Origin latitude converted to the
-							   gausian surface. */
+							   Gaussian surface. */
 	double sinOrgLatS;
 	double cosOrgLatS;
 
 	double lngQ;			/* Longitude of the oblique pole transformed
-							   to the gausian surface. */
+							   to the Gaussian surface. */
 	double latQ;			/* Latitude of the oblique pole transformed
-							   to the gausian surface. */
+							   to the Gaussian surface. */
 	double sinLatQ;
 	double cosLatQ;
 
@@ -5136,11 +5136,11 @@ struct cs_Krovk_
 /*
 	The following structure closely resembles the cs_Trmer_ structure.
 	This is true as one of the primary functions of the Sys34
-	projection technique is the conversion of geogrpahic coordinates
+	projection technique is the conversion of geographic coordinates
 	to UTM coordinates and vice versa.
 
 	In addition to the UTM conversion, we also add a conversion
-	to the Danish System 34 coartesian coordinates, which is
+	to the Danish System 34 Cartesian coordinates, which is
 	carried out by a polynomial.  This is necessary as the
 	System 34 coordinates are defined only by way of the polynomial
 	expansion which converts directly from UTM's to System 34
@@ -5151,14 +5151,14 @@ struct cs_Sys34_
 {
 	/* Much to the commentary here applies solely to the UTM
 	   portion of this conversion.  There are only two UTM
-	   zones involved, UTM 32 Noerthm and UTM 33 North.  All
-	   of this is expected to be referenced to the Eurpean
+	   zones involved, UTM 32 North and UTM 33 North.  All
+	   of this is expected to be referenced to the European
 	   Datum of 1950, and thus the ellipsoid is the
 	   International 1924. */
 
 	double cent_lng;		/* Longitude of the central meridian,
 							   in radians. */
-	double org_lat;			/* Latitude oif the origin, in radians.
+	double org_lat;			/* Latitude of the origin, in radians.
 							   always zero in this case. */
 	double k;				/* Scale factor on the central
 							   meridian.  This includes the
@@ -5179,12 +5179,12 @@ struct cs_Sys34_
 	double Rk;				/* Scaled radius of the earth. */
 	double Rk_ovr_2;		/* Scaled radius of the earth divided
 							   by two. */
-	double eprim_sq;		/* The ecenticity prime squared
+	double eprim_sq;		/* The eccentricity prime squared
 							   value required by the transformation
 							   which can be computed once, once
 							   the datum has been specified. */
 	double xx_max;			/* The X coordinate value, in user units,
-							   but not includeing false origin, which
+							   but not including false origin, which
 							   we use to approximate the eastern and
 							   western extents of the projectionable
 							   region. */
@@ -5192,10 +5192,10 @@ struct cs_Sys34_
 							   system units. */
 	struct cs_MmcofF_ mmcofF;
 							/* Coefficients necessary to compute
-							   meridonal distance from the equator. */
+							   meridional distance from the equator. */
 	struct cs_MmcofI_ mmcofI;
-							/* Coeffieients necessary to compute the
-							   foot print lataitude. */
+							/* Coefficients necessary to compute the
+							   foot print latitude. */
 	short region;			/* a value in the range of 1 through 3 inclusive,
 							   which indicates the specific Danish region
 							   which this conversion applies to. */
@@ -5252,7 +5252,7 @@ struct cs_Unity_
 							   in degrees. */
 	double unit_s;			/* Scale factor by which lat/longs
 							   in degrees are to be multiplied
-							   in order to acheive the desired
+							   in order to achieve the desired
 							   result. */
 	double k;				/* Value returned by CSunityK. */
 
@@ -5346,16 +5346,16 @@ struct cs_Gauss_
 							   be created; (usually) in meters;
 							   may be scaled by a scale reduction
 							   factor */
-	double ecent;			/* Ecentricity of the ellipsoid for which
+	double ecent;			/* Eccentricity of the ellipsoid for which
 							   a Gaussian SPhere is to be created */
 	double e_sq;			/* ecent squared */
 	double orgLng;			/* origin longitude, in radians */
 	double stdLat;			/* latitude at which the Gaussian
 							   curvature is calculated; in
 							   radians */
-	double N0;				/* The gaussian curvature in meters. */
+	double N0;				/* The Gaussian curvature in meters. */
 	double alpha;			/* Used to convert longitudes to and
-							   from the gaussian sphere */
+							   from the Gaussian sphere */
 	double logK;			/* Used to convert geographic coordinates
 							   to and from the Gaussian sphere */
 	double K;				/* helpful during test and debug */
@@ -5556,7 +5556,7 @@ struct cs_Prjtab_
 	The sprf_typ argument is used to indicate that the label
 	contains sprintf format specifications, and indicates what
 	type of processing is to be completed.  I.e. a kludge to
-	handle such things as Modified Sterographic complex
+	handle such things as Modified Stereographic complex
 	parameters in an efficient manner.
 
 */
@@ -5774,7 +5774,7 @@ struct cs_Mgrs_
 	struct cs_Pstro_ SouthPole;		/* UPS parameters, south pole */
 };
 
-/* The following enumerates the various possibilities of coodinate
+/* The following enumerates the various possibilities of coordinate
    values with regard to a specific MGRS grid square.  The default
    value is cs_MGRS_GRDSQR_CENTER.
    
@@ -5919,7 +5919,7 @@ int CScalcRegnFromMgrs (struct cs_Mgrs_ *_This,double sw [2],double ne [2],Const
 	to zero (the normal setting) enables all messages.  Setting
 	cs_ErrSup to 0xFFFF suppresses the reporting of all messages.
 
-	For example, to simply verify the existance of a coordinate
+	For example, to simply verify the existence of a coordinate
 	system, one could:
 
 	err_sup_save = cs_ErrSup;
@@ -5937,10 +5937,10 @@ int CScalcRegnFromMgrs (struct cs_Mgrs_ *_This,double sw [2],double ne [2],Const
 	}
 
 	The grouping, therefore, will allow reporting of conditions
-	such as "Couln't open the coordinate system dictionary", but
+	such as "Couldn't open the coordinate system dictionary", but
 	will disable the "Coordinate system not found" type of message.
 
-	Remember, these values are used in a biot map fashion.
+	Remember, these values are used in a bit map fashion.
 */
 
 #define cs_ERSUP_SOFT   1		/* Software problems; problems which are not
@@ -6226,12 +6226,12 @@ int CScalcRegnFromMgrs (struct cs_Mgrs_ *_This,double sw [2],double ne [2],Const
 #define cs_CSQ_PLRLAT	244		/* Org Lat is not polar. */
 #define cs_CSQ_USEPLR	245		/* Polr org lat on oblique projection. */
 #define cs_CSQ_UTMZON	246		/* Invalid UTM zone number provided. */
-#define cs_CSQ_HMISPHR	247		/* Invalid hemisphere specifiction. */		
+#define cs_CSQ_HMISPHR	247		/* Invalid hemisphere specifiction. */
 #define cs_CSQ_USESW	248		/* Az == 90, use Swiss Oblique Mercator */
 #define cs_CSQ_MAX15	249		/* Eastern meridian cannot be more than
 								   15 degrees away from the central
 								   meridian. */
-#define cs_CSQ_OBLQPOLE 250		/* Invalid oblique pole specification. */		
+#define cs_CSQ_OBLQPOLE 250		/* Invalid oblique pole specification. */
 #define cs_CSQ_AFFZERO	251		/* Denominator of affine is zero. */
 #define cs_CSQ_NRDATUM	252		/* Non-earth referecned to a datum. */
 #define cs_CSQ_OSTN97	253		/* OSTN97 grid shift file not present. */
@@ -6515,7 +6515,12 @@ int CScalcRegnFromMgrs (struct cs_Mgrs_ *_This,double sw [2],double ne [2],Const
 #define cs_PLYNM_CNVRG    476		/* General polynomial inverse failed to converge. */
 #define cs_PLYNM_RNG      477		/* General plynomial: Coordinate outside useful range. */
 
-#define cs_ERROR_MAX	  cs_SELF_TEST
+#define cs_GPQ_NOINV      478		/* Path references the inverse of a transformation
+									   which does not support the inverse. */
+#define cs_GPQ_CHAIN      479		/* Chain of datums in a path is  not continuous from
+									   source to target. */
+
+#define cs_ERROR_MAX	  cs_GPQ_CHAIN
 
 /*
 	The following casts are used to eliminate warnings from
@@ -7515,7 +7520,7 @@ struct csGeoid99Hdr_
 #define cs_BSWP_Geoid99Hdr "ddddlll"
 
 /* The following is the header on a .byn file.  We define it here to
-   take advanatge of whatever packing is currently in place.
+   take advantage of whatever packing is currently in place.
    This file format is used for various data purposes, geoid
    height only being the most useful. */
 struct csBynGridFileHdr_
@@ -7588,7 +7593,7 @@ struct csBynGridFileHdr_
 
 /******************************************************************************
 	US Geoid 96 file object.  Essentially the same as a csGridFileUS.  However,
-	the Geoid 96 algorithm uses the biquadratic calculation techique.  This is
+	the Geoid 96 algorithm uses the biquadratic calculation technique.  This is
 	rather incompatible with the grid cell/caching technique used in the
 	standard csGridFileUS capability.  So, we use a very much more direct
 	approach here.  There are no "grid cells" and remote equivalent of
@@ -7835,7 +7840,7 @@ struct csBynGridFile_
 
 /******************************************************************************
 	US Geoid Height Object
-	Encspsulates the functionality of converting a WGS84 latitude/longitude
+	Encapsulates the functionality of converting a WGS84 latitude/longitude
 	to a Geoid Height.  Currently, only the US data files are supported.  We
 	will have to add several more types in the future. At such time, we will
 	adopt a scheme similar to that used for Nad27ToNad83 (in that case we
@@ -7876,7 +7881,7 @@ struct csGeoidHeightEntry_
 };
 /******************************************************************************
 	US VertCon Object
-	Encspsulates the functionality of converting a NADV29 orthometric height
+	Encapsulates the functionality of converting a NADV29 orthometric height
 	to a NADV88 orthometric height.  I'm currently assuming that there is
 	only a US version of this stuff.  If I'm wrong, extending to include
 	a Canadian version will not be too tough.  Add a type element, and a

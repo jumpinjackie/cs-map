@@ -29,7 +29,7 @@
 
 /**********************************************************************
 	The following function is used to return a text string which
-	describes thelast error condition encounered.
+	describes the last error condition encountered.
 **********************************************************************/
 
 void EXP_LVL1 CS_errmsg (char *user_bufr,int bfr_size)
@@ -45,7 +45,7 @@ void EXP_LVL1 CS_errmsg (char *user_bufr,int bfr_size)
 **    Calling Sequence:	CSerpt (mesg,size,err_num);
 **
 **	char *mesg;					pointer to the character array which is to
-**								recieve the error message text.
+**								receive the error message text.
 **	int size;					the size of the character array pointed to
 **								by the mesg argument.
 **	int err_num;				number of the error condition being
@@ -70,9 +70,9 @@ void EXP_LVL1 CS_errmsg (char *user_bufr,int bfr_size)
 	names, into the error message.
 	
 	Group is a bit map which classifies (can't use class, it is
-	resevered word in C++) an error condition as a member of one
+	reserved word in C++) an error condition as a member of one
 	or more of the following classes.  The cs_ErrSup global
-	variable is used to supress errors of specific classes at
+	variable is used to suppress errors of specific classes at
 	specific times.
 	
 	For example, when one desires to use CS_dtdef to determine if
@@ -92,7 +92,7 @@ void EXP_LVL1 CS_errmsg (char *user_bufr,int bfr_size)
 	  2 | cs_ERSUP_SYS    | System problems, e.g. malloc failed,
 		|                 | I/O error, disk full.
 	  4 | cs_ERSUP_CONFIG | Installation, configuration, manufacturing
-		|                 | problems; e.g. couln't open COORDSYS
+		|                 | problems; e.g. couldn't open COORDSYS
 	  8 | cs_ERSUP_OPR    | Operational problems; e.g. invalid name,
 		|                 | bogus coordinate system name.  Conditions
 		|                 | a user might cause.
@@ -294,7 +294,7 @@ struct csErrtab_ csErrtab [] =
  {   cs_MRT_NTFND, csET_NM,cs_ERSUP_OPR,
 						   "Multiple Regression file named %s not found in data directory."},
  {   cs_DTC_FIL_F, csET_NM,cs_ERSUP_CONFIG,
-						   "Datum shift data file(s) named %s are not available in approriate directory."},
+						   "Datum shift data file(s) named %s are not available in appropriate directory."},
  {   cs_DTC_FIL_W, csET_NM,cs_ERSUP_CONFIG,
 						   "WARNING: Datum shift data file(s) named %s not available; using approximation."},
  {   cs_DTC_RNG_F,csET_LOC,cs_ERSUP_RNG,
@@ -399,9 +399,9 @@ struct csErrtab_ csErrtab [] =
  { cs_CSQ_NOREF,   csET_NM,cs_ERSUP_OPR,
 						   "%s :: System must be referenced to a datum or an ellipsoid." },
  {cs_CSQ_NOTNRTH,  csET_NM,cs_ERSUP_OPR,
-						   "%s :: Standard paralells are not ordered correctly." },
+						   "%s :: Standard parallels are not ordered correctly." },
  {cs_CSQ_NRTHLAT,  csET_NM,cs_ERSUP_OPR,
-						   "%s :: Standard parallells are not ordered correctly." },
+						   "%s :: Standard parallels are not ordered correctly." },
  { cs_CSQ_NRTHPNT, csET_NM,cs_ERSUP_OPR,
 						   "%s :: Point defining Y axis direction incorrectly specified." },
  {  cs_CSQ_ORGLAT, csET_NM,cs_ERSUP_OPR,
@@ -413,7 +413,7 @@ struct csErrtab_ csErrtab [] =
  {  cs_CSQ_PLLEQU, csET_NM,cs_ERSUP_OPR,
 						   "%s :: Standard parallel locations are the same." },
  {  cs_CSQ_PLLLRG, csET_NM,cs_ERSUP_OPR,
-						   "%s :: Standard parallel locations not inbetween poles." },
+						   "%s :: Standard parallel locations not in between poles." },
  {  cs_CSQ_PLLREV, csET_NM,cs_ERSUP_OPR,
 						   "%s :: Order of standard parallels incorrect." },
  { cs_CSQ_PLLZERO, csET_NM,cs_ERSUP_OPR,
@@ -461,7 +461,7 @@ struct csErrtab_ csErrtab [] =
  {   cs_CSQ_GEOMM,csET_NM,cs_ERSUP_OPR,
 						   "%s :: Invalid invalid geographic useful range detected." },
  {   cs_CSQ_CRTMM,csET_NM,cs_ERSUP_OPR,
-						   "%s :: Invalid invalid cartesian useful range detected." },
+						   "%s :: Invalid invalid Cartesian useful range detected." },
  {   cs_CSQ_PLLED, csET_NM,cs_ERSUP_OPR,
 						   "%s :: Standard parallels must be equidistant from poles." },
  {  cs_CSQ_PLRLAT, csET_NM,cs_ERSUP_OPR,
@@ -548,7 +548,7 @@ struct csErrtab_ csErrtab [] =
  {   cs_MGRS_STR4, csET_NM,cs_ERSUP_OPR,
 						   "MGRS string invalid: '%s' contains a non-digit where a digit was expected." },
  {   cs_MGRS_STR5, csET_NM,cs_ERSUP_OPR,
-						   "MGRS string invalid: '%s' references a non-existant zone." },
+						   "MGRS string invalid: '%s' references a non-existent zone." },
  {   cs_MGRS_STR6, csET_NM,cs_ERSUP_OPR,
 						   "MGRS string invalid: the 8 degree latitude zone designation in '%s' is invalid." },
  {   cs_MGRS_STR7, csET_NM,cs_ERSUP_OPR,
@@ -558,7 +558,7 @@ struct csErrtab_ csErrtab [] =
  {   cs_MGRS_STR9, csET_NM,cs_ERSUP_OPR,
 						   "MGRS string invalid: the 8 degree latitude zone and the 100K meter quad designations in '%s' are inconsistent." },
  {   cs_MGRS_STRA, csET_NM,cs_ERSUP_OPR,
-						   "MGRS string invalid: processing of '%s' produced a range/domain error on conversion to geogrpahic form." },
+						   "MGRS string invalid: processing of '%s' produced a range/domain error on conversion to geographic form." },
  {   cs_MGRS_STRB, csET_NM,cs_ERSUP_OPR,
 						   "MGRS string invalid: '%s' contains an invalid UTM zone number or UPS zone designator." },
  {   cs_MGRS_STRC,       0,cs_ERSUP_OPR,
@@ -572,7 +572,7 @@ struct csErrtab_ csErrtab [] =
  {  cs_FLBK_WRNGT, csET_NM,cs_ERSUP_OPR,
 						   "Fallback datum specified in geodetic data catalog file named %s is of the wrong type." },
  {   cs_NOT_NERTH,       0,cs_ERSUP_OPR,
-						   "Conversion from a NERTH type definition to anyother type is not supported." },
+						   "Conversion from a NERTH type definition to any other type is not supported." },
  {   cs_NAD_RNG_A,csET_LOC,cs_ERSUP_OPR,
 						   "WARNING: Data in range %s is outside NAD27<->NAD83 NADCON coverage; using fallback approximation." },
  { cs_AGD66_RNG_A,csET_LOC,cs_ERSUP_OPR,
@@ -598,7 +598,7 @@ struct csErrtab_ csErrtab [] =
  {  cs_MREG_CNVRG, csET_NM,cs_ERSUP_OPR,
 						   "Multiple regression 2D inverse calculation failed to converge." },
  {cs_DTC_SOFTIGNR, csET_NM,cs_ERSUP_OPR,
-						   "Ten datum shift data availablity errors have been reported; reporting of additional such situations is being suppressed." },
+						   "Ten datum shift data availability errors have been reported; reporting of additional such situations is being suppressed." },
  {  cs_GEOID_INIT,       0,cs_ERSUP_CONFIG,
 						   "Geiod height calculation sub-system was not initialized properly." },
  {  cs_TOKYO_ICNT,       0,cs_ERSUP_RNG,
@@ -745,7 +745,7 @@ struct csErrtab_ csErrtab [] =
  { cs_GPDICT,             0,cs_ERSUP_SYS,
 						   "The Geodetic Path Dictionary open failed."},
  { cs_GP_PROT,      csET_NM,cs_ERSUP_OPR,
-						   "%s is a distribution geoodetic path definition and is protected."},
+						   "%s is a distribution geodetic path definition and is protected."},
  { cs_GP_UPROT,     csET_NM,cs_ERSUP_OPR,
 						   "User defined geodetic path %s is now protected."},
  { cs_GP_NOT_FND,   csET_NM,cs_ERSUP_OPR,
@@ -759,7 +759,7 @@ struct csErrtab_ csErrtab [] =
  { cs_GXDICT,             0,cs_ERSUP_SYS,
 						   "The Geodetic Transformation Dictionary open failed."},
  { cs_GX_PROT,      csET_NM,cs_ERSUP_OPR,
-						   "%s is a distribution geoodetic ttransformation definition and is protected."},
+						   "%s is a distribution geodetic transportation definition and is protected."},
  { cs_GX_UPROT,     csET_NM,cs_ERSUP_OPR,
 						   "User defined geodetic transformation %s is now protected."},
  { cs_GX_NOT_FND,   csET_NM,cs_ERSUP_OPR,
@@ -841,10 +841,14 @@ struct csErrtab_ csErrtab [] =
  { cs_SELF_TEST ,   csET_NM,cs_ERSUP_SOFT,
 						   "Self test of object named %s failed during construction."},
  { cs_PLYNM_DEG ,   csET_NM,cs_ERSUP_DATA,
-						   "Geodetic transform %s: Poltnomial degree exceeds max supported."},
+						   "Geodetic transform %s: Polynomial degree exceeds max supported."},
  {  cs_PLYNM_RNG, csET_LOC,cs_ERSUP_RNG,
 						   "Encountered data at %s which is outside general polynomial data file coverage."},
- { cs_SELF_TEST ,   csET_NM,cs_ERSUP_SOFT,
+ {  cs_GPQ_NOINV, csET_NM,cs_ERSUP_OPR,
+						   "%s :: Path references an unsupported inverse transformation."},
+ {  cs_GPQ_CHAIN, csET_NM,cs_ERSUP_OPR,
+						   "%s :: Path's datum chain from source to target is not continuous."},
+ { cs_SELF_TEST,   csET_NM,cs_ERSUP_SOFT,
 						   "Self test of object named %s failed during construction."},
  {              0,        0,0,""}
 };
@@ -1001,7 +1005,7 @@ void EXP_LVL9 CSreltoa (char *rslt,int size,long32_t value)
 	array.
 
 	NOTE: by simple sprintf, we mean it recognizes a
-	single %s soecification in the format string.  This
+	single %s specification in the format string.  This
 	reference is replaced with the string given by
 	the insert argument.
 */

@@ -440,15 +440,21 @@ error:
 
 int EXP_LVL1 CS_gpchk (Const struct cs_GeodeticPath_ *gpPath,unsigned short gpChkFlg,int err_list [],int list_sz)
 {
+	extern char csErrnam [MAXPATH];
+
 	short gpIdx;
-	
+
 	int st;
+	int ii;
 	int gxIndex;
 	int err_cnt;
 
 	struct cs_GeodeticPathElement_* gpPtr;
+	struct cs_GxIndex_* gxPtr;
 
-	err_cnt = -1;
+	char datumName [cs_KEYNM_DEF];
+
+	err_cnt = -1;			/* We'lll be returning err_cnt + 1 */
 
 	if (CS_nampp64 (gpPath->pathName))
 	{
@@ -514,6 +520,88 @@ int EXP_LVL1 CS_gpchk (Const struct cs_GeodeticPath_ *gpPath,unsigned short gpCh
 			}
 		}
 	}
+
+	/* If we're good so far, check that the path is consistent.  That is,
+	   the chain of datum names is proper.  We'll need a GX index for this,
+	   so this is not always appropriate. */
+	if (err_cnt < 0 && (gpChkFlg & cs_GPCHK_XFORM) != 0)
+	{
+		/* We start with the source datum of the path. */
+		CS_stncp (datumName,gpPath->srcDatum,sizeof (datumName));
+
+		/* Check that the chain of transformations is valid. */
+		for (gpIdx = 0;gpIdx < gpPath->elementCount;gpIdx += 1)
+		{
+			gpPtr = &gpPath->geodeticPathElements [gpIdx];
+
+			/* Determine the source datum for the current transformation. */
+			gxIndex = CS_locateGxByName (gpPtr->geodeticXformName);
+			if (gxIndex < 0)			/* Defensive */
+			{
+				if (++err_cnt < list_sz) err_list [err_cnt] = cs_GPQ_NOXFRM;
+				break;
+			}
+			gxPtr = CS_getGxIndexEntry (gxIndex);
+			if (gpPtr->direction == cs_DTCDIR_FWD)
+			{
+				if (CS_stricmp (datumName,gxPtr->srcDatum))
+				{
+					/* Oops! Chain is broken. */
+					if (++err_cnt < list_sz) err_list [err_cnt] = cs_GPQ_CHAIN;
+				}
+				else
+				{
+					CS_stncp (datumName,gxPtr->trgDatum,sizeof (datumName));
+				}
+			}
+			else if (gpPtr->direction == cs_DTCDIR_INV)
+			{
+				if (!gxPtr->inverseSupported)
+				{
+					/* Path says use the inverse, but the transformation does
+					   not support the inverse. */
+					if (++err_cnt < list_sz) err_list [err_cnt] = cs_GPQ_NOINV;
+				}
+				else if (CS_stricmp (datumName,gxPtr->trgDatum))
+				{
+					/* Oops! Chain is broken. */
+					if (++err_cnt < list_sz) err_list [err_cnt] = cs_GPQ_CHAIN;
+					break;
+				}
+				else
+				{
+					/* Chain is continuous, so far; check next transformation in
+					   the path. */
+					CS_stncp (datumName,gxPtr->srcDatum,sizeof (datumName));
+				}
+			}
+
+			/* No sense trying to follow a broken chain. */
+			if (err_cnt >= 0)
+			{
+				break;
+			}
+		}
+		if (err_cnt < 0)
+		{
+			/* Verify that the path did end up at the target datum. */
+			if (CS_stricmp (datumName,gpPath->trgDatum))
+			{
+				if (++err_cnt < list_sz) err_list [err_cnt] = cs_GPQ_CHAIN;
+			}
+		}
+	}
+
+	/* If so instructed, report all of the errors detected so far. */
+	if ((gpChkFlg & cs_GPCHK_REPORT) != 0)
+	{
+		CS_stncp (csErrnam,gpPath->pathName,MAXPATH);
+		for (ii = 0;ii <= err_cnt && ii < list_sz;ii++)
+		{
+			CS_erpt (err_list [ii]);
+		}
+	}
+
 	return (err_cnt + 1);
 }
 
