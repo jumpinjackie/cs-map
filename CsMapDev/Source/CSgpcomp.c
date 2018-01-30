@@ -533,9 +533,11 @@ int CSgpdefwr (	csFILE *outStrm,
 	int flag;
 	int err_cnt;
 	int cancel;
+	int chainErrFlag;
 
 	char *cp;
 
+	char currentDatumName [cs_KEYNM_DEF];
 	char err_msg [128];
 
 	struct cs_GeodeticPathElement_ *pathElemPtr;
@@ -543,6 +545,7 @@ int CSgpdefwr (	csFILE *outStrm,
 
 	err_cnt = 0;
 	cancel = FALSE;
+	pathElemPtr = NULL;
 
 	gpdef->protect = TRUE;
 	/* The following sets the "creation date" to Jan 1, 2002 (approx) for
@@ -551,20 +554,37 @@ int CSgpdefwr (	csFILE *outStrm,
 	   any kind of change. */
 	if (!CS_stricmp (gpdef->group,"TEST")) gpdef->protect = 4383;
 
-	/* Set the path 'reverible' member to true, until we know differently. */
+	/* Set the path 'reversible' member to true, until we know differently. */
 	gpdef->reversible = TRUE;
+
+	if (gpdef->elementCount == 0)
+	{
+		sprintf (err_msg,"Path named %s does not have any transformations.",gpdef->pathName);
+		cancel = (*err_func)(err_msg);
+		err_cnt += 1;
+	}
 
 	/* Verify  that all of the referenced geodetic transformations
 	   do indeed exist in the provided Geodetic Transformation
-	   Dictionary. */
+	   Dictionary.
+
+	   We also verify that the sequence of datum names is continuous. */
 	if (xfrmStrm != NULL && err_cnt == 0)
 	{
+		/* Capture the first datum in the datum chain. */
+		CS_stncp (currentDatumName,gpdef->srcDatum,sizeof (currentDatumName));
+		/* We only want to report a datum chain error once.  But we want the
+		   following loop to continue checking the existance of transformations.
+		   We use the chainErrFlag variable to accomplish this. */
+		chainErrFlag = FALSE;
+
 		count = gpdef->elementCount;
 		for (index = 0;index < count;index += 1)
 		{
+			/* Examine and test this path Element. */
 			pathElemPtr = &gpdef->geodeticPathElements [index];
 			cp = pathElemPtr->geodeticXformName;
-			
+			/* Make sure we don't reuse a previous definition. */
 			memset ((void*)&gx_def,0,sizeof (gx_def));
 			CS_stncp (gx_def.xfrmName,cp,sizeof (gx_def.xfrmName));
 			flag = CS_bins (xfrmStrm,(long32_t)sizeof (cs_magic_t),(long32_t)-1,sizeof (gx_def),&gx_def,(CMPFUNC_CAST)CS_gxcmp);
@@ -590,6 +610,39 @@ int CSgpdefwr (	csFILE *outStrm,
 						}
 					}
 				}
+
+				/* If the path reference to the current transformation is inverse,
+				   verify that the transformation is marked as reverible. */
+				if (pathElemPtr->direction == cs_DTCDIR_INV && !gx_def.inverseSupported)
+				{
+					sprintf (err_msg,"Path %s requires inverse of transformation %s which is not supported.",gpdef->pathName,gx_def.xfrmName);
+					cancel = (*err_func)(err_msg);
+					err_cnt += 1;
+				}
+
+				/* Verify the consistency of the datum chain. */
+				if (pathElemPtr->direction == cs_DTCDIR_FWD)
+				{
+					if (CS_stricmp (currentDatumName,gx_def.srcDatum) && !chainErrFlag)
+					{
+						chainErrFlag = TRUE;
+						sprintf (err_msg,"Datum chain of path %s is not continuous [%s].",gpdef->pathName,gx_def.xfrmName);
+						cancel = (*err_func)(err_msg);
+						err_cnt += 1;
+					}
+					CS_stncp (currentDatumName,gx_def.trgDatum,sizeof (currentDatumName));
+				}
+				if (pathElemPtr->direction == cs_DTCDIR_INV)
+				{
+					if (CS_stricmp (currentDatumName,gx_def.trgDatum) && !chainErrFlag)
+					{
+						chainErrFlag = TRUE;
+						sprintf (err_msg,"Datum chain of path %s is not continuous [%s].",gpdef->pathName,gx_def.xfrmName);
+						cancel = (*err_func)(err_msg);
+						err_cnt += 1;
+					}
+					CS_stncp (currentDatumName,gx_def.srcDatum,sizeof (currentDatumName));
+				}
 			}
 			else if (flag == 0)
 			{
@@ -602,6 +655,31 @@ int CSgpdefwr (	csFILE *outStrm,
 				sprintf (err_msg,"Geodetic transformation dictionary access failure detected when checking geodetic path named %s.",gpdef->pathName);
 				cancel = (*err_func)(err_msg);
 				err_cnt += 1;
+			}
+		} 
+
+		/* Verify that the result of the last transformation is the path "target". */
+		if (pathElemPtr != NULL && gx_def.xfrmName [0] != '\0' && !chainErrFlag)
+		{
+			if (pathElemPtr->direction == cs_DTCDIR_FWD)
+			{
+				if (CS_stricmp (gx_def.trgDatum,currentDatumName) && !chainErrFlag)
+				{
+					chainErrFlag = TRUE;			/* Superluous */
+					sprintf (err_msg,"Result of last transformation of %s does not produce target datum.",gpdef->pathName);
+					cancel = (*err_func)(err_msg);
+					err_cnt += 1;
+				}
+			}
+			if (pathElemPtr->direction == cs_DTCDIR_INV)
+			{
+				if (CS_stricmp (gx_def.srcDatum,currentDatumName) && !chainErrFlag)
+				{
+					chainErrFlag = TRUE;			/* Superluous */
+					sprintf (err_msg,"Result of last transformation of %s does not produce target datum.",gpdef->pathName);
+					cancel = (*err_func)(err_msg);
+					err_cnt += 1;
+				}
 			}
 		}
 	}

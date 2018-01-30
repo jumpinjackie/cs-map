@@ -1230,7 +1230,7 @@ struct cs_GeodeticPath_
 									   are reversible which is the normal case */
 	short elementCount;				/* Number of transformations in this definition.
 									   Can be just one; usually two or three;
-									   csPATHELE_BASE max */
+									   csPATH_MAXXFRM max */
 	short epsgCode;					/* EPSG coordinate operation code of the
 									   concatenated coordinate operation if there
 									   is one and it is known; otherwise zero */
