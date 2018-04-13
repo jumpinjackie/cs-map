@@ -1015,6 +1015,7 @@ int CSdtcsuPhaseThree (struct csDtmBridge_* bridgePtr,struct cs_Dtcprm_ *dtcPtr)
 				{
 					/* Since we got 'fromResult' from the GxIndex, this should
 					   never happen unless there is a coding error somewhere. */
+
 					CS_stncp (csErrnam,"CS_datum::9",MAXPATH);
 					CS_erpt (cs_ISER);
 					goto error;

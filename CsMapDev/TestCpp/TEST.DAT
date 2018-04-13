@@ -6664,8 +6664,57 @@ RMTCRS11-BlackfeetIF,456728.3058,62412.5253,NSRS11.LL,111 58 22.55324W,48 10 11.
 NSRS11.LL,111 35 16.10914W,45 53 30.49015N,RMTCRS11-Bobcat,73776.0318,60233.6347,0.0002,0.0002
 RMTCRS11-Bobcat,73776.0318,60233.6347,NSRS11.LL,111 35 16.10914W,45 53 30.49015N,1.0E-09,1.0E-09
 
+
+###############################################################################
+# Test case extracted from:
+#	Geocentric Datum of Australia 2020
+#	Interim Release Note
+#	Version 1.01
+#	March 03, 2017
+#	Section 2.4.1
+#
+#  Using this test case to test the Conformal Grid implementation of the
+#  GDA94 -> GDA2020 transformation until such time as test data for this
+#  specific conversion is available.
+#
+#  From page 28 of "Geocentric Datum of Australia 2020 Technical Manual":
+#
+#	"The GDA94 - GDA2020 conformal only transformation grid delivers the
+#	same result as the 7-parameter similarity transformation (Section 3.1).
+#	It has been developed at the request of some software providers who are
+#	moving towards the use of grids as the preferred method of geodetic
+#	transformation in selected software platforms."
+#
+#  Thus, the tolerance of this test is tight.
+#
+LL-GDA94,133 53 07.847844E,23 40 12.44601876S,GDA2020-C.LL,133 53 07.87779E,23 40 12.39650S,1.0E-08,1.0E-08
+GDA2020-C.LL,133 53 07.87779E,23 40 12.39650S,LL-GDA94,133 53 07.847844E,23 40 12.44601876S,1.0E-08,1.0E-08
+
+###############################################################################
+# Test case extracted from:
+#	Geocentric Datum of Australia 2020
+#	Interim Release Note
+#	Version 1.01
+#	March 03, 2017
+#	Section 2.4.1
+#
+#  Using this test case to test the Conformal & Distortion Grid implementation
+#  of the GDA94 -> GDA2020 transformation until such time as test data for this
+#  specific conversion is available.
+#
+#  From page 28 of "Geocentric Datum of Australia 2020 Technical Manual":
+#	"The magnitude of the distortion varies between jurisdictions and can be
+#	in the order of decimetres."
+#
+#  Thus, the tolerance of this test is quite loose.
+#
+LL-GDA94,133 53 07.847844E,23 40 12.44601876S,GDA2020-CD.LL,133 53 07.87779E,23 40 12.39650S,1.0E-07,1.0E-07
+GDA2020-CD.LL,133 53 07.87779E,23 40 12.39650S,LL-GDA94,133 53 07.847844E,23 40 12.44601876S,1.0E-07,1.0E-07
+
 ###############################################################################
 #
 # That's it.  If you have some more cases documented by reputable sources,
 # we'll be glad to add them.
 #
+
+
