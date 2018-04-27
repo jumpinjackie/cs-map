@@ -997,15 +997,7 @@ int CSdtcsuPhaseThree (struct csDtmBridge_* bridgePtr,struct cs_Dtcprm_ *dtcPtr)
 		{
 			/* No path, look for a transformation. */
 			toResult = CS_locateGxByDatum2 (&toDirection,pvtDtmName,trgDtmName);
-			if (toResult == cs_GXIDX_DUPXFRM)
-			{
-				bridgeStatus = cs_DTCBRG_NOTUNIQUE;
-			}
-			else if (toResult <= cs_GXIDX_ERROR)
-			{
-				bridgeStatus = cs_DTCBRG_ERROR;
-			}
-			else
+			if (toResult >= 0)
 			{
 				/* Here if there is a unique transformation from the pivot
 				   datum to the target datum; i.e. a single transformation
@@ -1029,6 +1021,14 @@ int CSdtcsuPhaseThree (struct csDtmBridge_* bridgePtr,struct cs_Dtcprm_ *dtcPtr)
 				   results.  At this point, bridgeStatus should still be
 				   cs_DTCBRD_BUILDING */
 				break;
+			}
+			else if (toResult == cs_GXIDX_DUPXFRM)
+			{
+				bridgeStatus = cs_DTCBRG_NOTUNIQUE;
+			}
+			else if (toResult == cs_GXIDX_ERROR)
+			{
+				bridgeStatus = cs_DTCBRG_ERROR;
 			}
 		}
 	}

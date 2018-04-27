@@ -77,6 +77,7 @@ int CStestT (bool verbose,long32_t duration)
 	clock_t nmDoneClock;
 	double nmExecTime;
 
+
 	int status;
 	struct cs_Csprm_ *srcCrs = NULL;
 	struct cs_Csprm_ *trgCrs = NULL;
@@ -85,6 +86,15 @@ int CStestT (bool verbose,long32_t duration)
 	// Mostly to keep lint/compiler happy.
 	nmStartClock = clock ();
 
+	/* Working ticket #214. */
+
+	srcCrs = CS_csloc ("LL84");
+	trgCrs = CS_csloc ("DeutscheBahn.LL");
+	dtcprm = CS_dtcsu (srcCrs,trgCrs,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
+	dtcprm = CS_dtcsu (srcCrs,trgCrs,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
+	nmDoneClock = clock ();
+
+#ifdef __SKIP__
 	// Working Ticket #207.
 	// Requires placement of a bogus entry in the definition of the
 	// NSRS11_to_WGS84 geodetic path.
@@ -135,6 +145,7 @@ int CStestT (bool verbose,long32_t duration)
 		err_cnt = 1;
 	}
 	nmDoneClock = clock ();
+#endif
 
 #ifdef __SKIP__
 	/* Working Ticket # 211  */
