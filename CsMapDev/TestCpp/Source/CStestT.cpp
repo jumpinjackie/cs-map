@@ -86,6 +86,64 @@ int CStestT (bool verbose,long32_t duration)
 	// Mostly to keep lint/compiler happy.
 	nmStartClock = clock ();
 
+	/* Working ticket #215. */
+
+	char errMsg [MAXPATH];
+	
+	srcCrs = CS_csloc ("LL84");
+	trgCrs = CS_csloc ("LL-NS.ATS77");
+	dtcprm = CS_dtcsu (srcCrs,trgCrs,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
+	if (dtcprm == NULL)
+	{
+		++err_cnt;
+		CS_errmsg (errMsg,sizeof (errMsg));
+		printf ("CS_dtcsu Error: %s.\n",errMsg);
+	}
+	trgCrs = CS_csloc ("LL-NS.NAD83.2010");
+	dtcprm = CS_dtcsu (srcCrs,trgCrs,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
+	if (dtcprm == NULL)
+	{
+		++err_cnt;
+		CS_errmsg (errMsg,sizeof (errMsg));
+		printf ("CS_dtcsu Error: %s.\n",errMsg);
+	}
+	trgCrs = CS_csloc ("LL-NS.NAD83.1997");
+	dtcprm = CS_dtcsu (srcCrs,trgCrs,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
+	if (dtcprm == NULL)
+	{
+		++err_cnt;
+		CS_errmsg (errMsg,sizeof (errMsg));
+		printf ("CS_dtcsu Error: %s.\n",errMsg);
+	}
+	trgCrs = CS_csloc ("LL84");
+	srcCrs = CS_csloc ("LL-NS.ATS77");
+	dtcprm = CS_dtcsu (srcCrs,trgCrs,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
+	if (dtcprm == NULL)
+	{
+		++err_cnt;
+		CS_errmsg (errMsg,sizeof (errMsg));
+		printf ("CS_dtcsu Error: %s.\n",errMsg);
+	}
+	srcCrs = CS_csloc ("LL-NS.NAD83.2010");
+	dtcprm = CS_dtcsu (srcCrs,trgCrs,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
+	if (dtcprm == NULL)
+	{
+		++err_cnt;
+		CS_errmsg (errMsg,sizeof (errMsg));
+		printf ("CS_dtcsu Error: %s.\n",errMsg);
+	}
+	srcCrs = CS_csloc ("LL-NS.NAD83.1997");
+	dtcprm = CS_dtcsu (srcCrs,trgCrs,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
+	if (dtcprm == NULL)
+	{
+		++err_cnt;
+		CS_errmsg (errMsg,sizeof (errMsg));
+		printf ("CS_dtcsu Error: %s.\n",errMsg);
+	}
+
+	nmDoneClock = clock ();
+
+#ifdef __SKIP__
 	/* Working ticket #214. */
 
 	srcCrs = CS_csloc ("LL84");
@@ -93,6 +151,7 @@ int CStestT (bool verbose,long32_t duration)
 	dtcprm = CS_dtcsu (srcCrs,trgCrs,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
 	dtcprm = CS_dtcsu (srcCrs,trgCrs,cs_DTCFLG_DAT_W1,cs_DTCFLG_BLK_W);
 	nmDoneClock = clock ();
+#endif
 
 #ifdef __SKIP__
 	// Working Ticket #207.
