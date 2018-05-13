@@ -18142,6 +18142,7 @@ GenericId,NameType,Flavor,NumericId,NameId,DupSort,AliasFlag,Flags,Deprecation,R
 3852,16,Oracle,3852,"RSRGD2000 / DGLC2000",0,0,0,0,,
 3857,16,EPSG,3857,"WGS 84 / Pseudo-Mercator",0,0,0,0,,
 3857,16,ESRI,3857,"WGS_1984_Web_Mercator_Auxiliary_Sphere",0,0,0,0,,
+3857,16,ESRI,3857,WGS_84_Pseudo_Mercator,0,1,0,0,,
 3857,16,Oracle,3857,"WGS 84 / Pseudo-Mercator",0,0,0,0,,
 3857,16,Autodesk,0,"WGS84.PseudoMercator",0,0,0,0,,
 3873,16,EPSG,3873,"ETRS89 / GK19FIN",0,0,0,0,,
