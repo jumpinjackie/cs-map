@@ -435,6 +435,11 @@ int CStestN (const TcsEpsgDataSetV6& epsgV6,bool verbose,long32_t duration)
 			continue;
 		}
 
+// CS-MAP no longer uses the conversion parameters in the Datum Dictionary.
+// Conversion parameters are now catalogged in the Geodetic Transformation Dictionary.
+// Thus, we skip the following as the results are no longer relevant.
+#ifdef __SKIP__
+
 		// Now it gets rather hairy.  There can be multiple transformations in
 		// the EPSG database for any given datum shift.  To the degree
 		// reasonable, we want to compare CS-MAP's definition to the specific
@@ -628,6 +633,8 @@ int CStestN (const TcsEpsgDataSetV6& epsgV6,bool verbose,long32_t duration)
 			}
 			CS_free (csMapDtDef);
 		}
+#endif
+
 	}
 	printf ("\tDatum Test: ok = %d, different = %d, noMap = %d, noCvt = %d, failed = %d, skipped = %d\n",okCnt,diffCnt,mapCnt,cvtCnt,failCnt,skipCnt);
 	errCnt += (diffCnt + failCnt);
